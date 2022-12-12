@@ -1,0 +1,36 @@
+{
+  "name": "web-gestao-contas",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@ant-design/charts": "^1.4.2",
+    "@ant-design/colors": "^6.0.0",
+    "@next/font": "^13.0.5",
+    "antd": "^5.0.2",
+    "axios": "^1.2.0",
+    "jwt-decode": "^3.1.2",
+    "moment": "^2.29.4",
+    "next": "13.0.5",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-fullpage-custom-loader": "^0.1.6",
+    "react-number-format": "^5.1.2",
+    "use-debounce": "^9.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "18.11.9",
+    "@types/react": "18.0.25",
+    "@types/react-dom": "18.0.9",
+    "@typescript-eslint/eslint-plugin": "^5.44.0",
+    "eslint": "8.28.0",
+    "eslint-config-next": "13.0.5",
+    "prettier": "^2.8.0",
+    "typescript": "4.9.3"
+  }
+}
