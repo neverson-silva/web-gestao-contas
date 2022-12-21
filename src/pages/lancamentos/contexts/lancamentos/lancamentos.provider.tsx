@@ -1,16 +1,18 @@
-import { FormaPagamento, Pessoa } from '@models/faturaItem'
+import { FaturaItem, FormaPagamento, Pessoa } from '@models/faturaItem'
 import { Moment } from 'moment/moment'
 import { Form, FormInstance, notification } from 'antd'
 import React, {
 	createContext,
 	PropsWithChildren,
-	useCallback,
 	useEffect,
 	useMemo,
 	useState,
 } from 'react'
 import { useDadosComuns } from '@contexts/dadosComuns/useDadosComuns'
-import { converterDinheiroEmFloat } from '@utils/util'
+import { converterDinheiroEmFloat, delay } from '@utils/util'
+import { IPagination, Page } from '@models/pagination'
+import { api } from '@pages/api/api'
+import { useMesAno } from '@contexts/mesAno/useMesAno'
 
 export type PessoaDivisaoDiferenteForm = {
 	id: number
@@ -21,7 +23,7 @@ export type PessoaDivisaoDiferenteForm = {
 export type CadastroFormValues = {
 	nome: string
 	valor: string | number
-	formaPagamento: FormaPagamento
+	formaPagamento: number
 	idPessoa: number[]
 	pessoasDivididoIgualmente?: Pessoa[]
 	pessoasDivididoDiferente?: PessoaDivisaoDiferenteForm[]
@@ -38,17 +40,14 @@ export type CadastroCompraContextData = {
 	formDivisaoDiferente: FormInstance<any>
 	parcelado: boolean
 	isDivididoDiferente: boolean
-
 	setParcelado: React.Dispatch<React.SetStateAction<boolean>>
 	setIsDivididoDiferente: React.Dispatch<React.SetStateAction<boolean>>
-
 	adicionarPessoa: (idPessoa: number, valor?: number) => void
 	alterarValorPessoa: (idPessoa: number, valor: number) => void
 	pessoasDiferente: PessoaDivisaoDiferenteForm[]
 	setPessoasDiferentes: React.Dispatch<
 		React.SetStateAction<PessoaDivisaoDiferenteForm[]>
 	>
-
 	limparPessoasDiferente: () => void
 	limparTudo: () => void
 	limparFormularios: () => void
@@ -56,11 +55,30 @@ export type CadastroCompraContextData = {
 	reinicializarPessoasDiferente: () => void
 }
 
-export const CadastroCompraContext = createContext<CadastroCompraContextData>(
-	{} as unknown as CadastroCompraContextData,
+export type AtualizacaoCompraContextData = CadastroCompraContextData
+export type BuscaLancamentosContextData = {
+	pager: IPagination
+	setPager: React.Dispatch<React.SetStateAction<IPagination>>
+	lancamentos: FaturaItem[]
+	formBusca: FormInstance<any>
+	loadingBusca: boolean
+	buscarLancamentosAtual: (params?: {
+		page?: number
+		size?: number
+		reset?: boolean
+		loadingMore?: boolean
+	}) => Promise<void>
+}
+export type LancamentosContextData = {
+	cadastro: CadastroCompraContextData
+	busca: BuscaLancamentosContextData
+	atualizacao: AtualizacaoCompraContextData
+}
+export const LancamentoContext = createContext<LancamentosContextData>(
+	{} as unknown as LancamentosContextData,
 )
 
-const CadastroCompraProvider: React.FC<PropsWithChildren> = ({ children }) => {
+const LancamentosProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	const [pessoasDivididoDiferente, setPessoasDivididoDiferente] = useState<
 		PessoaDivisaoDiferenteForm[]
 	>([])
@@ -95,8 +113,9 @@ const CadastroCompraProvider: React.FC<PropsWithChildren> = ({ children }) => {
 				converterDinheiroEmFloat(form.getFieldValue('valor'))
 			) {
 				notification.error({
-					message: 'Maluco passou',
-					description: 'Presta atenção nos valores',
+					message: 'Limite para divisão atingido',
+					description:
+						'Valor dividido é superior ao valor total da compra verifique!',
 				})
 			}
 
@@ -131,7 +150,69 @@ const CadastroCompraProvider: React.FC<PropsWithChildren> = ({ children }) => {
 		reinicializarPessoasDiferente()
 	}
 
-	const contextData = useMemo(
+	/// search
+
+	const [loadingBusca, setLoadingBusca] = useState(false)
+	const { mesAnoAtual } = useMesAno()
+	const [pager, setPager] = useState<IPagination>({
+		current: 1,
+		pageSize: 10,
+		total: 0,
+		hasNext: false,
+	})
+	const [lancamentos, setLancamentos] = useState<FaturaItem[]>([])
+	const [formBusca] = Form.useForm()
+	const buscarLancamentosAtual = async (params?: {
+		page?: number
+		size?: number
+		reset?: boolean
+		loadingMore?: boolean
+	}) => {
+		try {
+			setLoadingBusca(true)
+			await delay(200)
+			const page = params?.reset ? 1 : params?.page ?? pager.current
+			const size = params?.size ?? pager.pageSize
+
+			const { data } = await api.get<Page<FaturaItem>>(
+				'faturas/buscar-itens-fatura',
+				{
+					params: {
+						page: page,
+						linesPerPage: size,
+						mes: mesAnoAtual.mes,
+						ano: mesAnoAtual.ano,
+						searchKey: formBusca.getFieldValue('search'),
+					},
+				},
+			)
+			if (params?.loadingMore) {
+				setLancamentos((old) => [...old, ...data.content])
+			} else {
+				setLancamentos(data.content)
+			}
+
+			setPager({
+				current: data.number + 1,
+				pageSize: data.size,
+				total: data.totalElements,
+				hasNext: !data.last,
+			})
+		} catch (err) {
+			notification.error({
+				message: 'Oops Ocorreu um erro',
+				description:
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-ignore
+					err?.response?.data?.message ??
+					'Não foi possível buscar os lançamentos neste momento',
+			})
+		} finally {
+			setLoadingBusca(false)
+		}
+	}
+
+	const cadastroData = useMemo(
 		() => ({
 			formDivisaoDiferente,
 			form,
@@ -165,17 +246,42 @@ const CadastroCompraProvider: React.FC<PropsWithChildren> = ({ children }) => {
 			reinicializarPessoasDiferente,
 		],
 	)
+	const buscaData = useMemo(
+		() => ({
+			pager,
+			setPager,
+			lancamentos,
+			loadingBusca,
+			buscarLancamentosAtual,
+			formBusca,
+		}),
+		[
+			pager,
+			setPager,
+			lancamentos,
+			loadingBusca,
+			buscarLancamentosAtual,
+			formBusca,
+		],
+	)
 
 	useEffect(() => {
 		if (!isDivididoDiferente) {
 			reinicializarPessoasDiferente()
 		}
 	}, [isDivididoDiferente])
+
 	return (
-		<CadastroCompraContext.Provider value={contextData}>
+		<LancamentoContext.Provider
+			value={{
+				cadastro: cadastroData,
+				atualizacao: cadastroData,
+				busca: buscaData,
+			}}
+		>
 			{children}
-		</CadastroCompraContext.Provider>
+		</LancamentoContext.Provider>
 	)
 }
 
-export default React.memo(CadastroCompraProvider)
+export default React.memo(LancamentosProvider)

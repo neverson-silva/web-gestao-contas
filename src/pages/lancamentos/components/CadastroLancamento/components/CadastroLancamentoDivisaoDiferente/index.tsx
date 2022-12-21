@@ -1,11 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { Col, Form, Input, Row, Select } from 'antd'
 import { NumericFormat } from 'react-number-format'
 import { converterDinheiroEmFloat } from '@utils/util'
 import { useDebouncedCallback } from 'use-debounce'
-import { PessoaDivisaoDiferenteForm } from '@pages/lancamentos/contexts/cadastroCompra/cadastroCompra.provider'
 import { useDadosComuns } from '@contexts/dadosComuns/useDadosComuns'
-import { useCadastroCompra } from '@pages/lancamentos/contexts/cadastroCompra/useCadastroCompra'
+import { useCadastroCompra } from '@pages/lancamentos/contexts/lancamentos/useCadastroCompra'
 
 type CadastroLancamentoDivisaoDiferenteProps = {}
 export const CadastroLancamentoDivisaoDiferente: React.FC<
@@ -33,7 +32,7 @@ export const CadastroLancamentoDivisaoDiferente: React.FC<
 		(idPessoa: number, valor: string) => {
 			alterarValorPessoa(idPessoa, converterDinheiroEmFloat(valor ?? '0'))
 		},
-		1000,
+		300,
 	)
 
 	useEffect(() => {
@@ -61,6 +60,7 @@ export const CadastroLancamentoDivisaoDiferente: React.FC<
 											allowLeadingZeros={true}
 											decimalScale={2}
 											placeholder="R$ 1.000.000"
+											value={pessoaDiferente.valor ?? null}
 											onChange={(event) =>
 												handleChangeValorPessoaDiferente(
 													pessoaDiferente.id,

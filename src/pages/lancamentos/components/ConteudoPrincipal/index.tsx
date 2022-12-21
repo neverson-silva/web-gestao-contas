@@ -1,43 +1,32 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import Head from '@components/Head'
-import {
-	Button,
-	FloatButton,
-	Form,
-	notification,
-	Row,
-	Skeleton,
-	Typography,
-} from 'antd'
-import { FaturaItem } from '@models/faturaItem'
-import { api } from '@pages/api/api'
-import { IPagination, Page } from '@models/pagination'
+import { Button, FloatButton, Row, Skeleton, Typography } from 'antd'
 import Bloco from '@components/Bloco'
 import moment from 'moment'
 import { useMesAno } from '@contexts/mesAno/useMesAno'
 import Cabecalho from '@pages/lancamentos/components/Cabecalho'
-import { delay } from '@utils/util'
 import ListaCompras from '@pages/lancamentos/components/ListaCompras'
 import { useRouter } from 'next/router'
 import CadastroLancamento from '@pages/lancamentos/components/CadastroLancamento'
+import { useBuscaLancamento } from '@pages/lancamentos/contexts/lancamentos/useBuscaLancamento'
 
 const { BackTop } = FloatButton
 
 const ConteudoPrincipal: React.FC = () => {
 	const router = useRouter()
 
-	const [pager, setPager] = useState<IPagination>({
-		current: 1,
-		pageSize: 10,
-		total: 0,
-		hasNext: false,
-	})
-	const [lancamentos, setLancamentos] = useState<FaturaItem[]>([])
-	const [loading, setLoading] = useState(false)
+	const {
+		loadingBusca,
+		buscarLancamentosAtual,
+		formBusca,
+		pager,
+		lancamentos,
+	} = useBuscaLancamento()
+
 	const [loadingMore, setLoadingMore] = useState(false)
 
 	const { mesAnoAtual } = useMesAno()
-	const [form] = Form.useForm()
+
 	const dataFatura = useMemo(() => {
 		return moment(`${mesAnoAtual.ano}-${mesAnoAtual.mes}-01`).format(
 			'MMMM, YYYY',
@@ -45,57 +34,18 @@ const ConteudoPrincipal: React.FC = () => {
 	}, [mesAnoAtual])
 
 	const [openCadastro, setOpenCadastro] = useState(false)
+
+	const closeCadastro = async (updatePage?: boolean) => {
+		setOpenCadastro(false)
+		if (updatePage) {
+			await buscarLancamentosAtual({
+				reset: true,
+			})
+		}
+	}
+
 	const handleCreateNew = () => {
 		setOpenCadastro(true)
-	}
-	const buscarLancamentosAtual = async (params?: {
-		page?: number
-		size?: number
-		reset?: boolean
-		loadingMore?: boolean
-	}) => {
-		try {
-			setLoading(true)
-			await delay(200)
-			const page = params?.reset ? 1 : params?.page ?? pager.current
-			const size = params?.size ?? pager.pageSize
-
-			const { data } = await api.get<Page<FaturaItem>>(
-				'faturas/buscar-itens-fatura',
-				{
-					params: {
-						page: page,
-						linesPerPage: size,
-						mes: mesAnoAtual.mes,
-						ano: mesAnoAtual.ano,
-						searchKey: form.getFieldValue('search'),
-					},
-				},
-			)
-			if (params?.loadingMore) {
-				setLancamentos((old) => [...old, ...data.content])
-			} else {
-				setLancamentos(data.content)
-			}
-
-			setPager({
-				current: data.number + 1,
-				pageSize: data.size,
-				total: data.totalElements,
-				hasNext: !data.last,
-			})
-		} catch (err) {
-			notification.error({
-				message: 'Oops Ocorreu um erro',
-				description:
-					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-					// @ts-ignore
-					err?.response?.data?.message ??
-					'Não foi possível buscar os lançamentos neste momento',
-			})
-		} finally {
-			setLoading(false)
-		}
 	}
 
 	const buscarProximaPagina = async () => {
@@ -136,7 +86,7 @@ const ConteudoPrincipal: React.FC = () => {
 
 	useEffect(() => {
 		if (router.query.compra) {
-			form.setFieldsValue({
+			formBusca.setFieldsValue({
 				search: router.query.compra,
 			})
 		}
@@ -155,15 +105,15 @@ const ConteudoPrincipal: React.FC = () => {
 						reset: true,
 					})
 				}
-				form={form}
-				loading={loading}
+				form={formBusca}
+				loading={loadingBusca}
 			/>
-			{loading && !loadingMore && (
+			{loadingBusca && !loadingMore && (
 				<Bloco>
-					<Skeleton loading={loading} />
+					<Skeleton loading={loadingBusca} />
 				</Bloco>
 			)}
-			{(!loading || loadingMore) && (
+			{(!loadingBusca || loadingMore) && (
 				<>
 					<Row>
 						<Typography.Title level={4}>{dataFatura}</Typography.Title>
@@ -175,10 +125,7 @@ const ConteudoPrincipal: React.FC = () => {
 					</Bloco>
 				</>
 			)}
-			<CadastroLancamento
-				isOpened={openCadastro}
-				close={() => setOpenCadastro(false)}
-			/>
+			<CadastroLancamento isOpened={openCadastro} close={closeCadastro} />
 			<BackTop
 				type={'primary'}
 				tooltip={'Voltar ao topo'}

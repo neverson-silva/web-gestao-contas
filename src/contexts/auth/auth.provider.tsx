@@ -2,7 +2,7 @@ import React, {
 	createContext,
 	PropsWithChildren,
 	useCallback,
-	useEffect,
+	useEffect, useMemo,
 	useState,
 } from 'react'
 import { Usuario } from '@models/auth'
@@ -15,6 +15,7 @@ type IAuthProviderProps = PropsWithChildren
 export type AuthContextData = {
 	usuario?: Usuario
 	isAuthenticated: boolean
+	isAdmin: boolean
 	login(email: string, senha: string): Promise<boolean>
 	logout(): Promise<boolean>
 	hasRole(...roles: string[]): boolean
@@ -42,11 +43,13 @@ const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
 	const login = useCallback(
 		async (email: string, senha: string): Promise<boolean> => {
 			const response = await api.login(email, senha)
+			response.roles = response.roles.map((role: any) => role.authority)
 			setUsuario(response)
 			return true
 		},
 		[usuario],
 	)
+
 
 	const hasRole = (...roles: string[]): boolean => {
 		if (roles == undefined || roles.length == 0) {
@@ -54,6 +57,7 @@ const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
 		}
 		return usuario?.roles.some((role) => roles.includes(role)) ?? false
 	}
+	const isAdmin = useMemo(() => hasRole('ROLE_ADMIN'),[usuario])
 
 	const logout = useCallback(async (): Promise<boolean> => {
 		setUsuario(undefined)
@@ -70,6 +74,7 @@ const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
 				logout,
 				isAuthenticated: !!usuario,
 				hasRole,
+				isAdmin
 			}}
 		>
 			{children}

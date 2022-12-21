@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
 	Button,
 	Checkbox,
@@ -18,7 +18,7 @@ import moment from 'moment'
 import { converterDinheiroEmFloat, formatarDinheiro } from '@utils/util'
 import { useDebouncedCallback } from 'use-debounce'
 import { useDadosComuns } from '@contexts/dadosComuns/useDadosComuns'
-import { useCadastroCompra } from '@pages/lancamentos/contexts/cadastroCompra/useCadastroCompra'
+import { useCadastroCompra } from '@pages/lancamentos/contexts/lancamentos/useCadastroCompra'
 import { InfoCircleOutlined, InfoCircleTwoTone } from '@ant-design/icons'
 import { useAuth } from '@contexts/auth/useAuth'
 type CadastroLancamentoPrincipalProps = {
@@ -134,6 +134,14 @@ const CadastroLancamentoPrincipal: React.FC<
 		}
 	}
 
+	useEffect(() => {
+		form.setFieldsValue({
+			idPessoa: [usuario!.pessoa!.id],
+			idMes: mesAnoAtual?.mes,
+		})
+		decidirSePermiteDivisaoDiferente()
+	}, [usuario])
+
 	return (
 		<>
 			<Row gutter={[16, 16]}>
@@ -208,7 +216,7 @@ const CadastroLancamentoPrincipal: React.FC<
 							allowClear={false}
 							showArrow
 							placeholder={'Selecione uma pessoa'}
-							defaultValue={usuario?.pessoa?.id}
+							// defaultValue={usuario?.pessoa?.id}
 							showSearch={true}
 							onDeselect={() => decidirSePermiteDivisaoDiferente()}
 							onSelect={() => {
@@ -256,7 +264,6 @@ const CadastroLancamentoPrincipal: React.FC<
 							allowClear={true}
 							showArrow
 							placeholder={'Selecione uma mês'}
-							defaultValue={mesAnoAtual?.mes}
 							showSearch={true}
 							options={meses.map((mes) => ({
 								value: mes.id,

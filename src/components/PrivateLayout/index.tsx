@@ -76,7 +76,7 @@ const PrivateLayout: React.FC<PrivateLayoutProps> = ({ children }) => {
 							<Space wrap>
 								<Dropdown
 									overlay={menu}
-									onVisibleChange={(visible) => setDropdownVisible(!visible)}
+									onOpenChange={(visible) => setDropdownVisible(!visible)}
 								>
 									<Space>
 										<Avatar

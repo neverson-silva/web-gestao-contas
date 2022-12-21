@@ -1,26 +1,48 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Col, Drawer, Form, notification, Row } from 'antd'
+import {
+	Button,
+	Col,
+	Divider,
+	Drawer,
+	Form,
+	notification,
+	Row,
+	Typography,
+} from 'antd'
 import CadastroLancamentoPrincipal from '@pages/lancamentos/components/CadastroLancamento/components/CadastroLancamentoPrincipal'
 import CadastroLancamentoDivisaoDiferente from '@pages/lancamentos/components/CadastroLancamento/components/CadastroLancamentoDivisaoDiferente'
 import moment from 'moment'
-import { converterDinheiroEmFloat, delay } from '@utils/util'
-import { CadastroFormValues } from '@pages/lancamentos/contexts/cadastroCompra/cadastroCompra.provider'
-import { useCadastroCompra } from '@pages/lancamentos/contexts/cadastroCompra/useCadastroCompra'
+import { converterDinheiroEmFloat, delay, formatarDinheiro } from '@utils/util'
+import { CadastroFormValues } from '@pages/lancamentos/contexts/lancamentos/lancamentos.provider'
+import { useCadastroCompra } from '@pages/lancamentos/contexts/lancamentos/useCadastroCompra'
 import { api } from '@pages/api/api'
+import { EDivisaoLancamentoTipo, FaturaItem } from '@models/faturaItem'
 
 export type CadastroLancamentoProps = {
 	isOpened: boolean
-	close: () => void
+	close: (updatePage?: boolean) => void
+
+	compra?: FaturaItem
 }
 
 const CadastroLancamento: React.FC<CadastroLancamentoProps> = ({
 	isOpened,
 	close,
+	compra,
 }) => {
 	const [abrirDivisaoDiferente, setAbrirDivisaoDiferente] = useState(false)
 	const [loading, setLoading] = useState(false)
-	const { form, limparTudo, reinicializarPessoasDiferente } =
-		useCadastroCompra()
+	const {
+		form,
+		limparTudo,
+		reinicializarPessoasDiferente,
+		setParcelado,
+		setIsDivididoDiferente,
+		setPessoasDiferentes,
+		pessoasDiferente,
+		isDivididoDiferente,
+		formDivisaoDiferente,
+	} = useCadastroCompra()
 
 	const handleOpenDivisaoDiferente = () => {
 		setAbrirDivisaoDiferente(true)
@@ -29,9 +51,9 @@ const CadastroLancamento: React.FC<CadastroLancamentoProps> = ({
 		setAbrirDivisaoDiferente(false)
 	}
 
-	const handleOnClose = () => {
+	const handleOnClose = (updatePage?: boolean) => {
 		limparTudo()
-		close()
+		close(updatePage)
 	}
 
 	const submitForm = async () => {
@@ -56,7 +78,14 @@ const CadastroLancamento: React.FC<CadastroLancamentoProps> = ({
 					igualmente,
 					diferente,
 					pessoas: igualmente
-						? formulario.idPessoa.map((id) => ({ id: id, valor: 0 }))
+						? [
+								...new Set(
+									formulario.idPessoa.filter((idPess) => idPess !== idPessoa),
+								),
+						  ].map((id) => ({
+								id: id,
+								valor: 0,
+						  }))
 						: (formulario?.pessoasDivididoDiferente?.filter(
 								(pess) => pess.id !== idPessoa,
 						  ) as any[]),
@@ -65,28 +94,88 @@ const CadastroLancamento: React.FC<CadastroLancamentoProps> = ({
 				quantidadeParcelas: formulario.quantidadeParcelas,
 				dataCompra: moment(formulario.dataCompra).format('YYYY-MM-DD'),
 			}
-			await delay(200)
-			const { data } = await api.post('lancamentos', payload)
-			console.log('payload', payload)
+			await delay(100)
+
+			if (compra) {
+				await api.put(`lancamentos/${compra.lancamento.id}`, payload)
+			} else {
+				await api.post('lancamentos', payload)
+			}
+			handleOnClose(true)
+			notification.success({
+				message: 'Sucesso',
+				description: 'Lançamento cadastrado com sucesso!',
+			})
 		} catch (e) {
 			console.log(e)
 			notification.error({
-				message: 'Ocorreu um erro tente novamente mais tarde',
-				description: 'Error tota',
+				description:
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-ignore
+					e?.response?.data?.message ??
+					'Ocorreu um erro tente novamente mais tarde',
+				message: 'Ocorreu um erro ao salvar',
 			})
 		} finally {
 			setLoading(false)
 		}
 	}
 
+	const inicializarFormulario = () => {
+		const idsPessoas = [compra?.pessoa.id]
+
+		if (compra?.dividido && Array.isArray(compra.itensRelacionados)) {
+			if (compra.divisaoId === EDivisaoLancamentoTipo.IGUALMENTE) {
+				idsPessoas.push(
+					...compra?.itensRelacionados?.map((item) => item?.pessoa?.id),
+				)
+			} else {
+				setIsDivididoDiferente(true)
+				const pessoasAdicionar: number[] = []
+				setPessoasDiferentes(
+					compra?.itensRelacionados?.map((item) => {
+						pessoasAdicionar.push(item.pessoa.id)
+						return {
+							id: item.pessoa.id,
+							valor: item.valorUtilizado,
+							nome: item.pessoa.nome,
+						}
+					}),
+				)
+				formDivisaoDiferente.setFieldsValue({
+					tempDiff: pessoasAdicionar,
+				})
+			}
+		}
+		form.setFieldsValue({
+			formaPagamento: compra!.formaPagamento.id!,
+			idPessoa: [...new Set(idsPessoas)],
+			idMes: compra?.lancamento?.mes?.id,
+			descricao: compra?.lancamento.descricao,
+			valor: compra?.lancamento.valor,
+			nome: compra?.nome,
+			parcelado: compra?.parcelado,
+			quantidadeParcelas: compra?.lancamento?.quantidadeParcelas,
+			valorPorParcela: compra?.parcelado
+				? formatarDinheiro(compra?.lancamento?.valorPorParcela)
+				: undefined,
+			dataCompra: moment(compra?.lancamento.dataCompra),
+		})
+		setParcelado(compra?.parcelado ?? false)
+	}
+
 	useEffect(() => {
-		form.resetFields()
-	}, [])
+		if (compra) {
+			inicializarFormulario()
+		} else {
+			limparTudo()
+		}
+	}, [compra])
 
 	return (
 		<Drawer
 			visible={isOpened}
-			onClose={handleOnClose}
+			onClose={() => handleOnClose()}
 			placement={'left'}
 			title={'Informações da Compra'}
 			width={700}
@@ -106,7 +195,8 @@ const CadastroLancamento: React.FC<CadastroLancamentoProps> = ({
 							style={{
 								width: '100%',
 							}}
-							onClick={handleOnClose}
+							onClick={() => handleOnClose()}
+							disabled={loading}
 							size={'large'}
 						>
 							Cancelar
@@ -122,7 +212,7 @@ const CadastroLancamento: React.FC<CadastroLancamentoProps> = ({
 							loading={loading}
 							onClick={submitForm}
 						>
-							Salvar
+							{compra ? 'Atualizar' : 'Salvar'}
 						</Button>
 					</Col>
 				</Row>
@@ -150,7 +240,9 @@ const CadastroLancamento: React.FC<CadastroLancamentoProps> = ({
 										width: '100%',
 									}}
 									onClick={() => {
-										reinicializarPessoasDiferente()
+										if (!compra) {
+											reinicializarPessoasDiferente()
+										}
 										handleCloseDivisaoDiferente()
 									}}
 								>
@@ -174,6 +266,30 @@ const CadastroLancamento: React.FC<CadastroLancamentoProps> = ({
 					<CadastroLancamentoDivisaoDiferente />
 				</Drawer>
 			</Form>
+			{isDivididoDiferente && Array.from(pessoasDiferente).length && (
+				<>
+					<Divider />
+					<Typography.Title level={4}>Dados Divisão</Typography.Title>
+					{Array.from(pessoasDiferente)
+						.chunk(2)
+						.map((twoPerson, index) => {
+							return (
+								<Row gutter={[16, 0]} key={index}>
+									{twoPerson.map((pessoaDiff) => {
+										return (
+											<Col xs={12} key={pessoaDiff.id}>
+												<span>
+													{pessoaDiff.nome}:{' '}
+													{formatarDinheiro(pessoaDiff.valor)}
+												</span>
+											</Col>
+										)
+									})}
+								</Row>
+							)
+						})}
+				</>
+			)}
 		</Drawer>
 	)
 }

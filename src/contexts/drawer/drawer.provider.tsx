@@ -55,7 +55,7 @@ const DrawerProvider: React.FC<any> = ({ children }) => {
 			{children}
 			<Drawer
 				title={settings.title}
-				visible={!!contentDrawer}
+				open={!!contentDrawer}
 				onClose={() => {
 					setContentDrawer(null)
 				}}

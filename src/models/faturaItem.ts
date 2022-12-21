@@ -32,6 +32,10 @@ export class Parcela {
 	contaNome: string
 }
 
+export enum  EDivisaoLancamentoTipo{
+	IGUALMENTE = 1,
+	DIFERENTE = 2
+}
 export class Lancamento {
 	id: number
 	nome: string
@@ -44,7 +48,7 @@ export class Lancamento {
 	mes: Mes
 	pago: boolean
 	tipoConta: number
-	divisaoId?: number
+	divisaoId?: EDivisaoLancamentoTipo
 	createdAt: string
 	updatedAt: string
 	valorDividido?: number

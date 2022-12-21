@@ -1,7 +1,8 @@
 import React from 'react'
 import { FaturaItem } from '@models/faturaItem'
-import { Button, List } from 'antd'
+import { List } from 'antd'
 import ItemListaCompra from '@pages/lancamentos/components/ListaCompras/ItemListaCompra'
+
 type ListaComprasProps = {
 	compras: FaturaItem[]
 	loadMore?: React.ReactNode

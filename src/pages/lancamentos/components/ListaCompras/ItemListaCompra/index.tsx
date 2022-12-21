@@ -1,9 +1,23 @@
 import { FaturaItem } from '@models/faturaItem'
-import React from 'react'
-import { Col, Row, Tooltip, Typography } from 'antd'
+import React, { useMemo, useState } from 'react'
+import {
+	Avatar,
+	Col,
+	Dropdown,
+	notification,
+	Popconfirm,
+	Row,
+	Tooltip,
+	Typography,
+} from 'antd'
 import { grey } from '@ant-design/colors'
 import moment from 'moment/moment'
-import { formatarDinheiro } from '@utils/util'
+import { beautyNumber, delay, formatarDinheiro } from '@utils/util'
+import IconMenuKebab from '@components/Icons/IconMenuKebab'
+import { api } from '@pages/api/api'
+import { useBuscaLancamento } from '@pages/lancamentos/contexts/lancamentos/useBuscaLancamento'
+import { AxiosError } from 'axios'
+import CadastroLancamento from '@pages/lancamentos/components/CadastroLancamento'
 
 const { Text } = Typography
 
@@ -15,278 +29,262 @@ const ItemListaCompra: React.FC<ItemListaCompra> = ({
 	compra,
 	currentIndex,
 }) => {
+	const [loadingExcluindo, setLoadingExcluindo] = useState(false)
+	const [openAtualizacao, setOpenAtualizacao] = useState(false)
+	const { buscarLancamentosAtual } = useBuscaLancamento()
+
+	const valorCompraMemo = useMemo(() => {
+		if (compra.dividido && compra.divisaoId != 1) {
+			const lancamentos = [compra, ...compra.itensRelacionados]
+			return lancamentos
+				.map((lancamento) => formatarDinheiro(lancamento.valorUtilizado))
+				.join(', ')
+		}
+		return formatarDinheiro(compra.valorUtilizado)
+	}, [compra])
+	const handleEditarClick = () => {
+		setOpenAtualizacao(true)
+	}
+
+	const handleExcluirClick = async (pCompra: FaturaItem) => {
+		try {
+			setLoadingExcluindo(true)
+			await delay(100)
+			await api.delete(`lancamentos/${pCompra.lancamento.id}`)
+			await buscarLancamentosAtual({ reset: true })
+
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			//@ts-ignore
+		} catch (e: AxiosError) {
+			console.log('error', e)
+			notification.error({
+				message: 'Ocorreu um erro ao excluir',
+				description:
+					e?.response?.data?.message ??
+					'Ocorreu um erro ao excluir, tente novamente mais tarde',
+			})
+		} finally {
+			setLoadingExcluindo(false)
+		}
+	}
+
+	const handleClonarClick = (pCompra: FaturaItem) => {}
+
+	const handleVerParcelasClick = (pCompra: FaturaItem) => {}
+
+	const items = [
+		{
+			key: '1',
+			label: <a onClick={handleEditarClick}>Editar</a>,
+		},
+		{
+			key: '2',
+			label: <a onClick={() => handleVerParcelasClick(compra)}>Ver parcelas</a>,
+		},
+
+		{
+			key: '3',
+			label: <a onClick={() => handleClonarClick(compra)}>Clonar</a>,
+		},
+		{
+			key: '4',
+			// label: <a onClick={() => handleExcluirClick(compra)}>Excluir</a>,
+			label: (
+				<Popconfirm
+					title={`Tem certeza que deseja excluir ${compra.nome}?`}
+					onConfirm={() => handleExcluirClick(compra)}
+					okText="Sim"
+					cancelText="Não"
+					okButtonProps={{
+						size: 'large',
+						loading: loadingExcluindo,
+						disabled: loadingExcluindo,
+					}}
+					cancelButtonProps={{
+						size: 'large',
+					}}
+				>
+					<a href="#">Excluir</a>
+				</Popconfirm>
+			),
+		},
+	]
+
 	return (
 		<div
 			key={currentIndex}
 			style={{
 				padding: 4,
-				paddingRight: 16,
-				paddingLeft: 16,
-				borderBottom: `1px solid #f0f0f0`,
 				backgroundColor: currentIndex % 2 === 0 ? '#F0F0F0' : 'white',
-				marginTop: 4,
+				paddingTop: 8,
+				paddingBottom: 8,
 			}}
 		>
-			<Row justify={'space-between'}>
-				<Col
-					xs={18}
-					sm={18}
-					md={18}
-					xl={18}
-					xxl={18}
-					style={{
-						display: 'flex',
-						alignContent: 'flex-start',
-						justifyContent: 'flex-start',
-						alignItems: 'flex-start',
+			{openAtualizacao && (
+				<CadastroLancamento
+					isOpened={openAtualizacao}
+					close={async (updatePage?: boolean) => {
+						setOpenAtualizacao(false)
+						if (updatePage) {
+							await buscarLancamentosAtual({ reset: true })
+						}
 					}}
-				>
-					<Text
-						style={{
-							fontSize: 12,
-							color: grey.primary,
-						}}
-					>
-						{moment(compra.lancamento.dataCompra).format('DD/MM/YYYY')}
-					</Text>
-				</Col>
-				<Col
-					xs={6}
-					sm={6}
-					md={6}
-					xl={6}
-					xxl={6}
-					style={{
-						display: 'flex',
-						alignContent: 'flex-end',
-						justifyContent: 'flex-end',
-						alignItems: 'flex-end',
-					}}
-				>
-					<Text
-						style={{
-							fontSize: 12,
-							color: grey.primary,
-						}}
-					>
-						{compra.dividido && compra.itensRelacionados?.length
-							? [compra, ...compra.itensRelacionados]
-									.map((faturaItem) => faturaItem?.pessoa?.nome)
-									.join(', ')
-							: compra.pessoa.nome}
-					</Text>
-				</Col>
-			</Row>
-			<Row
-				justify={'space-between'}
-				style={{
-					marginTop: 2,
-					marginBottom: 2,
-				}}
-			>
-				<Col
-					xs={18}
-					sm={18}
-					md={18}
-					xl={18}
-					xxl={18}
-					style={{
-						display: 'flex',
-						alignContent: 'flex-start',
-						justifyContent: 'flex-start',
-						alignItems: 'flex-start',
-					}}
-				>
-					<span
-						style={{
-							fontSize: 16,
-							fontWeight: '600',
-							wordBreak: 'break-all',
-						}}
-					>
-						{compra.nome}
-					</span>
-				</Col>
-				<Col
-					xs={6}
-					sm={6}
-					md={6}
-					xl={6}
-					xxl={6}
-					style={{
-						display: 'flex',
-						alignContent: 'flex-end',
-						justifyContent: 'flex-end',
-						alignItems: 'flex-end',
-					}}
-				>
-					<span
-						style={{
-							fontSize: 16,
-							fontWeight: '600',
-							wordBreak: 'break-all',
-						}}
-					>
-						{formatarDinheiro(compra.valorUtilizado)}
-					</span>
-				</Col>
-			</Row>
-			<Row
-				style={{
-					display: 'flex',
-				}}
-			>
-				<Col
-					xs={12}
-					sm={12}
-					md={12}
-					xl={12}
-					xxl={12}
-					style={{
-						display: 'flex',
-						alignContent: 'flex-start',
-						justifyContent: 'flex-start',
-						alignItems: 'flex-start',
-					}}
-				>
-					<Text
-						strong
-						style={{
-							fontSize: 12,
-							color: grey.primary,
-						}}
-					>
-						{compra.formaPagamento?.nome}
-					</Text>
-				</Col>
-				<Col
-					xs={12}
-					sm={12}
-					md={12}
-					xl={12}
-					xxl={12}
-					style={{
-						display: 'flex',
-						alignContent: 'flex-end',
-						justifyContent: 'flex-end',
-						alignItems: 'flex-end',
-					}}
-				>
-					<Text
-						style={{
-							fontSize: 12,
-							color: grey.primary,
-						}}
-					>
-						{compra.parcelado
-							? `em ${compra.lancamento.quantidadeParcelas} vezes`
-							: 'à vista'}
-					</Text>
-				</Col>
-			</Row>
-			{/*<Row style={{}}>*/}
-			{/*	<Col sm={24}>*/}
-			{/*<Row style={{ marginBottom: 2 }}>*/}
-			{/*	<Col span={6}>*/}
-			{/*		<Text*/}
-			{/*			style={{*/}
-			{/*				fontSize: 12,*/}
-			{/*				color: grey.primary,*/}
-			{/*			}}*/}
-			{/*		>*/}
-			{/*			{moment(compra.lancamento.dataCompra).format('DD/MM/YYYY')}*/}
-			{/*		</Text>*/}
-			{/*	</Col>*/}
-			{/*	<Col*/}
-			{/*		style={{*/}
-			{/*			flex: 1,*/}
-			{/*			alignItems: 'flex-end',*/}
-			{/*			justifyContent: 'flex-end',*/}
-			{/*			flexDirection: 'row',*/}
-			{/*			textAlign: 'right',*/}
-			{/*		}}*/}
-			{/*	>*/}
-			{/*		<Text*/}
-			{/*			style={{*/}
-			{/*				fontSize: 12,*/}
-			{/*				color: grey.primary,*/}
-			{/*			}}*/}
-			{/*		>*/}
-			{/*			{compra.dividido && compra.itensRelacionados?.length*/}
-			{/*				? [compra, ...compra.itensRelacionados]*/}
-			{/*						.map((faturaItem) => faturaItem?.pessoa?.nome)*/}
-			{/*						.join(', ')*/}
-			{/*				: compra.pessoa.nome}*/}
-			{/*		</Text>*/}
-			{/*	</Col>*/}
-			{/*</Row>*/}
-			{/*<Row>*/}
-			{/*	<Col span={16}>*/}
-			{/*		<Typography.Title*/}
-			{/*			style={{*/}
-			{/*				fontWeight: '600',*/}
-			{/*				fontSize: 16,*/}
-			{/*			}}*/}
-			{/*		>*/}
-			{/*			{compra.nome}*/}
-			{/*		</Typography.Title>*/}
-			{/*	</Col>*/}
+					compra={compra}
+				/>
+			)}
 
-			{/*	<Col*/}
-			{/*		style={{*/}
-			{/*			flex: 1,*/}
-			{/*			alignItems: 'flex-end',*/}
-			{/*			justifyContent: 'flex-end',*/}
-			{/*			flexDirection: 'row',*/}
-			{/*			textAlign: 'right',*/}
-			{/*		}}*/}
-			{/*	>*/}
-			{/*		<Typography.Title*/}
-			{/*			style={{*/}
-			{/*				fontSize: 16,*/}
-			{/*				marginLeft: '27%',*/}
-			{/*				fontWeight: '600',*/}
-			{/*			}}*/}
-			{/*		>*/}
-			{/*			{formatarDinheiro(compra.valorUtilizado)}*/}
-			{/*		</Typography.Title>*/}
-			{/*	</Col>*/}
-			{/*</Row>*/}
-			{/*<Row>*/}
-			{/*	<Col span={19}>*/}
-			{/*		<Text*/}
-			{/*			strong*/}
-			{/*			style={{*/}
-			{/*				fontSize: 12,*/}
-			{/*				color: grey.primary,*/}
-			{/*			}}*/}
-			{/*		>*/}
-			{/*			{compra.formaPagamento?.nome}*/}
-			{/*		</Text>*/}
-			{/*	</Col>*/}
-			{/*	<Col*/}
-			{/*		style={{*/}
-			{/*			flex: 1,*/}
-			{/*			alignItems: 'flex-end',*/}
-			{/*			justifyContent: 'flex-end',*/}
-			{/*			flexDirection: 'row',*/}
-			{/*			textAlign: 'right',*/}
-			{/*		}}*/}
-			{/*	>*/}
-			{/*		<Text*/}
-			{/*			style={{*/}
-			{/*				fontSize: 12,*/}
-			{/*				color: grey.primary,*/}
-			{/*			}}*/}
-			{/*		>*/}
-			{/*			{compra.parcelado*/}
-			{/*				? `em ${compra.lancamento.quantidadeParcelas} vezes`*/}
-			{/*				: 'à vista'}*/}
-			{/*		</Text>*/}
-			{/*	</Col>*/}
-			{/*</Row>*/}
-			{/*	</Col>*/}
-			{/*</Row>*/}
+			<Row>
+				<Col
+					xs={2}
+					sm={2}
+					md={2}
+					xl={1}
+					xxl={1}
+					style={{
+						display: 'flex',
+						justifyContent: 'center',
+						alignItems: 'center',
+					}}
+				>
+					<Tooltip title={compra?.pessoa?.nome}>
+						<Avatar
+							src={compra?.pessoa?.perfil}
+							size={45}
+							alt={compra?.pessoa?.nome}
+						/>
+					</Tooltip>
+				</Col>
+				<Col
+					xs={16}
+					sm={16}
+					md={16}
+					xl={16}
+					xxl={16}
+					style={{ paddingLeft: 8 }}
+				>
+					<Row>
+						<Text
+							style={{
+								fontSize: 12,
+								color: grey.primary,
+							}}
+						>
+							{moment(compra.lancamento.dataCompra).format('DD/MM/YYYY')}
+						</Text>
+					</Row>
+					<Row>
+						<span
+							style={{
+								fontSize: 16,
+								fontWeight: '600',
+								wordBreak: 'break-all',
+							}}
+						>
+							{compra.dividido
+								? `${compra.nome} - Total ${formatarDinheiro(
+										compra.lancamento.valor,
+								  )}`
+								: compra.nome}
+						</span>
+					</Row>
+					<Row>
+						<Text
+							strong
+							style={{
+								fontSize: 12,
+								color: grey.primary,
+							}}
+						>
+							{compra.formaPagamento?.nome}
+						</Text>
+					</Row>
+				</Col>
+				<Col
+					xs={6}
+					sm={6}
+					md={6}
+					xl={6}
+					xxl={6}
+					style={{
+						marginRight: 0,
+						marginLeft: 0,
+					}}
+				>
+					<Row
+						style={{
+							display: 'flex',
+							alignContent: 'flex-end',
+							justifyContent: 'flex-end',
+							alignItems: 'flex-end',
+						}}
+					>
+						<Text
+							style={{
+								fontSize: 12,
+								color: grey.primary,
+							}}
+						>
+							{compra.dividido && compra.itensRelacionados?.length
+								? [compra, ...compra.itensRelacionados]
+										.map((faturaItem) => faturaItem?.pessoa?.nome)
+										.join(', ')
+								: compra.pessoa.nome}
+						</Text>
+					</Row>
+					<Row
+						style={{
+							display: 'flex',
+							alignContent: 'flex-end',
+							justifyContent: 'flex-end',
+							alignItems: 'flex-end',
+						}}
+					>
+						<span
+							style={{
+								fontSize: 16,
+								fontWeight: '600',
+								wordBreak: 'break-all',
+							}}
+						>
+							{valorCompraMemo}
+						</span>
+					</Row>
+					<Row
+						style={{
+							display: 'flex',
+							alignContent: 'flex-end',
+							justifyContent: 'flex-end',
+							alignItems: 'flex-end',
+						}}
+					>
+						<Text
+							style={{
+								fontSize: 12,
+								color: grey.primary,
+							}}
+						>
+							{compra.parcelado
+								? `parcela ${beautyNumber(
+										compra.parcela?.numero,
+								  )} de ${beautyNumber(compra.lancamento.quantidadeParcelas)}`
+								: 'à vista'}
+						</Text>
+					</Row>
+				</Col>
+				<Col
+					xs={1}
+					style={{
+						display: 'flex',
+						justifyContent: 'flex-end',
+						alignItems: 'center',
+						paddingRight: 16,
+					}}
+				>
+					<Dropdown menu={{ items }} trigger={['click']}>
+						<IconMenuKebab size={24} onClick={(e) => e.preventDefault()} />
+					</Dropdown>
+				</Col>
+			</Row>
 		</div>
 	)
 }
