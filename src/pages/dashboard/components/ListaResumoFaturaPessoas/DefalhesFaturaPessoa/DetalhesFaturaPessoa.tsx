@@ -12,7 +12,7 @@ import {
 	Tag,
 	Typography,
 } from 'antd'
-import { api } from '@pages/api/api'
+import { api } from '@apis/api'
 import { IPagination, Page } from '@models/pagination'
 import { FaturaItem, Pessoa } from '@models/faturaItem'
 import { beautyNumber, delay, formatarDinheiro, isCartao } from '@utils/util'

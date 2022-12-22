@@ -1,10 +1,7 @@
 import { DrawerProps } from 'antd'
 
 import React, { ReactNode } from 'react'
-import {
-	DrawerContext,
-	DrawerWithProps,
-} from '@contexts/drawer/drawer.provider'
+import { DrawerContext, DrawerWithProps } from './drawer.provider'
 
 export function useDrawer<T extends DrawerWithProps>({
 	settings,

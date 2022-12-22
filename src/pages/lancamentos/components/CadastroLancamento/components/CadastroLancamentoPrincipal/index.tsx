@@ -18,9 +18,10 @@ import moment from 'moment'
 import { converterDinheiroEmFloat, formatarDinheiro } from '@utils/util'
 import { useDebouncedCallback } from 'use-debounce'
 import { useDadosComuns } from '@contexts/dadosComuns/useDadosComuns'
-import { useCadastroCompra } from '@pages/lancamentos/contexts/lancamentos/useCadastroCompra'
-import { InfoCircleOutlined, InfoCircleTwoTone } from '@ant-design/icons'
+import { useCadastroCompra } from '@contexts/lancamentos/useCadastroCompra'
+import { InfoCircleTwoTone } from '@ant-design/icons'
 import { useAuth } from '@contexts/auth/useAuth'
+
 type CadastroLancamentoPrincipalProps = {
 	abrirDivisaoDiferente: () => void
 }

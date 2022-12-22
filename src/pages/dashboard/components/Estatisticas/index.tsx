@@ -4,13 +4,18 @@ import {
 	ArrowUpOutlined,
 	InfoCircleOutlined,
 } from '@ant-design/icons'
-import { Card, Col, Row, Skeleton, Typography } from 'antd'
+import { Col, Row, Skeleton, Typography } from 'antd'
 import { formatarDinheiro } from '@utils/util'
 import { grey } from '@ant-design/colors'
-import { EstatisticasProps } from './/props'
 
 const { Text } = Typography
-
+export type EstatisticasProps = {
+	valor?: number
+	percentual?: number
+	titulo?: string
+	icone: any
+	loading?: boolean
+}
 const Estatisticas: React.FC<EstatisticasProps> = ({
 	valor,
 	percentual,

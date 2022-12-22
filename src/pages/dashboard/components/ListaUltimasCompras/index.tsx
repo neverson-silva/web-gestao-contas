@@ -3,7 +3,7 @@ import moment from 'moment'
 import { Col, List, notification, Row, Tooltip, Typography } from 'antd'
 import { delay, formatarDinheiro } from '@utils/util'
 import { grey } from '@ant-design/colors'
-import { api } from '@pages/api/api'
+import { api } from '@apis/api'
 import { Page } from '@models/pagination'
 import { FaturaItem } from '@models/faturaItem'
 

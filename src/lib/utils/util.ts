@@ -1,4 +1,4 @@
-import { FormaPagamento } from '@models/faturaItem'
+import { FormaPagamento } from '../models/faturaItem'
 
 export const toFixedTrunc = (x: string | number, n: number): string => {
 	const v = (typeof x === 'string' ? x : x.toString()).split('.')

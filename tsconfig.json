@@ -19,10 +19,11 @@
     "paths": {
       "@components/*": ["components/*"],
       "@pages/*": ["pages/*"],
-      "@models/*": ["models/*"],
+      "@models/*": ["lib/models/*"],
       "@assets/*": ["assets/*"],
-      "@contexts/*": ["contexts/*"],
-      "@utils/*": ["utils/*"]
+      "@contexts/*": ["lib/contexts/*"],
+      "@utils/*": ["lib/utils/*"],
+      "@apis/*": ["lib/apis/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

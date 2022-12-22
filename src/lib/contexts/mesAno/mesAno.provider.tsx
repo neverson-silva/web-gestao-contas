@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import moment, { Moment } from 'moment'
-import { api } from '@pages/api/api'
+import { api } from '@apis/api'
 
 export type MesAnoContextData = {
 	ano: number | undefined

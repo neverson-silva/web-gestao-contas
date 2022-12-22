@@ -1,5 +1,5 @@
 import React from 'react'
-import { LancamentoContext } from '@pages/lancamentos/contexts/lancamentos/lancamentos.provider'
+import { LancamentoContext } from './lancamentos.provider'
 
 export function useCadastroCompra() {
 	const context = React.useContext(LancamentoContext)

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 import { Layout, Menu } from 'antd'
 import {
 	UploadOutlined,

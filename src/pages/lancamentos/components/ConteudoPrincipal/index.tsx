@@ -8,7 +8,7 @@ import Cabecalho from '@pages/lancamentos/components/Cabecalho'
 import ListaCompras from '@pages/lancamentos/components/ListaCompras'
 import { useRouter } from 'next/router'
 import CadastroLancamento from '@pages/lancamentos/components/CadastroLancamento'
-import { useBuscaLancamento } from '@pages/lancamentos/contexts/lancamentos/useBuscaLancamento'
+import { useBuscaLancamento } from '@contexts/lancamentos/useBuscaLancamento'
 
 const { BackTop } = FloatButton
 

@@ -2,11 +2,12 @@ import React, {
 	createContext,
 	PropsWithChildren,
 	useCallback,
-	useEffect, useMemo,
+	useEffect,
+	useMemo,
 	useState,
 } from 'react'
 import { Usuario } from '@models/auth'
-import { api } from '@pages/api/api'
+import { api } from '@apis/api'
 import jwtDecode from 'jwt-decode'
 import { useRouter } from 'next/router'
 
@@ -50,14 +51,13 @@ const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
 		[usuario],
 	)
 
-
 	const hasRole = (...roles: string[]): boolean => {
 		if (roles == undefined || roles.length == 0) {
 			return false
 		}
 		return usuario?.roles.some((role) => roles.includes(role)) ?? false
 	}
-	const isAdmin = useMemo(() => hasRole('ROLE_ADMIN'),[usuario])
+	const isAdmin = useMemo(() => hasRole('ROLE_ADMIN'), [usuario])
 
 	const logout = useCallback(async (): Promise<boolean> => {
 		setUsuario(undefined)
@@ -74,7 +74,7 @@ const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
 				logout,
 				isAuthenticated: !!usuario,
 				hasRole,
-				isAdmin
+				isAdmin,
 			}}
 		>
 			{children}

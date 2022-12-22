@@ -3,8 +3,6 @@ import type { AppProps } from 'next/app'
 import { ConfigProvider } from 'antd'
 import PrivateLayout from '@components/PrivateLayout'
 import RouteGuard from '@components/RouteGuard'
-import AuthProvider from '@contexts/auth/auth.provider'
-import ModalProvider from '@contexts/modal/modal.provider'
 import ptBR from 'antd/lib/locale/pt_BR'
 import { Inter } from '@next/font/google'
 
@@ -12,9 +10,11 @@ import '@utils/extensions'
 
 import moment from 'moment'
 import 'moment/locale/pt-br'
-import MesAnoProvider from '@contexts/mesAno/mesAno.provider'
 import DrawerProvider from '@contexts/drawer/drawer.provider'
+import MesAnoProvider from '@contexts/mesAno/mesAno.provider'
 import DadosComunsProvider from '@contexts/dadosComuns/dadosComuns.provider'
+import ModalProvider from '@contexts/modal/modal.provider'
+import AuthProvider from '@contexts/auth/auth.provider'
 
 moment.locale('pt-br', {
 	months: [

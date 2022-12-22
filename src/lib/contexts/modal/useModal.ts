@@ -1,8 +1,5 @@
 import { ModalProps } from 'antd'
-import {
-	ComponentParamsWithSettings,
-	ModalContext,
-} from '@contexts/modal/modal.provider'
+import { ComponentParamsWithSettings, ModalContext } from './modal.provider'
 import React from 'react'
 
 export function useModal<T extends ComponentParamsWithSettings>({

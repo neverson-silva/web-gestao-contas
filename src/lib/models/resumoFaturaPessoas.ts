@@ -1,4 +1,4 @@
-import { FormaPagamento, Pessoa } from '@models/faturaItem'
+import { FormaPagamento, Pessoa } from './faturaItem'
 
 export class ResumoFaturaPessoas {
 	pessoa: Pessoa

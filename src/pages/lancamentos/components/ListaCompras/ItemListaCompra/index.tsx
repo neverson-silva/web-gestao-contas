@@ -14,8 +14,8 @@ import { grey } from '@ant-design/colors'
 import moment from 'moment/moment'
 import { beautyNumber, delay, formatarDinheiro } from '@utils/util'
 import IconMenuKebab from '@components/Icons/IconMenuKebab'
-import { api } from '@pages/api/api'
-import { useBuscaLancamento } from '@pages/lancamentos/contexts/lancamentos/useBuscaLancamento'
+import { api } from '@apis/api'
+import { useBuscaLancamento } from '@contexts/lancamentos/useBuscaLancamento'
 import { AxiosError } from 'axios'
 import CadastroLancamento from '@pages/lancamentos/components/CadastroLancamento'
 
@@ -68,9 +68,13 @@ const ItemListaCompra: React.FC<ItemListaCompra> = ({
 		}
 	}
 
-	const handleClonarClick = (pCompra: FaturaItem) => {}
+	const handleClonarClick = (pCompra: FaturaItem) => {
+		return pCompra
+	}
 
-	const handleVerParcelasClick = (pCompra: FaturaItem) => {}
+	const handleVerParcelasClick = (pCompra: FaturaItem) => {
+		return pCompra
+	}
 
 	const items = [
 		{

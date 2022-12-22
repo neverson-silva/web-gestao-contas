@@ -13,9 +13,9 @@ import CadastroLancamentoPrincipal from '@pages/lancamentos/components/CadastroL
 import CadastroLancamentoDivisaoDiferente from '@pages/lancamentos/components/CadastroLancamento/components/CadastroLancamentoDivisaoDiferente'
 import moment from 'moment'
 import { converterDinheiroEmFloat, delay, formatarDinheiro } from '@utils/util'
-import { CadastroFormValues } from '@pages/lancamentos/contexts/lancamentos/lancamentos.provider'
-import { useCadastroCompra } from '@pages/lancamentos/contexts/lancamentos/useCadastroCompra'
-import { api } from '@pages/api/api'
+import { CadastroFormValues } from '@contexts//lancamentos/lancamentos.provider'
+import { useCadastroCompra } from '@contexts//lancamentos/useCadastroCompra'
+import { api } from '@apis/api'
 import { EDivisaoLancamentoTipo, FaturaItem } from '@models/faturaItem'
 
 export type CadastroLancamentoProps = {

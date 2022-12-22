@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
 
 import { Column } from '@ant-design/plots'
-import { MesAnoContextData } from '@contexts/mesAno/mesAno.provider'
-import { delay, formatarDinheiro } from '@utils/util'
-import { api } from '@pages/api/api'
 import { notification } from 'antd'
-import { useMesAno } from '@contexts/mesAno/useMesAno'
-import { GraficoDadosPorFormaPagamento } from '@models/graficoDadosPorFormaPagamento'
 import { ColumnConfig } from '@ant-design/plots/es/components/column'
+import { delay, formatarDinheiro } from '@utils/util'
+import { useMesAno } from '@contexts/mesAno/useMesAno'
+import { MesAnoContextData } from '@contexts/mesAno/mesAno.provider'
+import { GraficoDadosPorFormaPagamento } from '@models/graficoDadosPorFormaPagamento'
+import { api } from '@apis/api'
 
 type GastosMensaisPorCartaoColunaDataset = {
 	label: string

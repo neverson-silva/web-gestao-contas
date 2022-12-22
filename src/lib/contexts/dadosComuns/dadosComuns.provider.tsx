@@ -7,9 +7,9 @@ import React, {
 	useState,
 } from 'react'
 import { delay } from '@utils/util'
-import { api } from '@pages/api/api'
+import { api } from '@apis/api'
 import { AxiosError } from 'axios'
-import { notification, Skeleton, Spin } from 'antd'
+import { notification, Spin } from 'antd'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import MyComponent from 'react-fullpage-custom-loader'

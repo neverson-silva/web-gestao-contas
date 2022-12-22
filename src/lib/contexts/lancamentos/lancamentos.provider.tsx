@@ -1,4 +1,4 @@
-import { FaturaItem, FormaPagamento, Pessoa } from '@models/faturaItem'
+import { FaturaItem, Pessoa } from '@models/faturaItem'
 import { Moment } from 'moment/moment'
 import { Form, FormInstance, notification } from 'antd'
 import React, {
@@ -11,7 +11,7 @@ import React, {
 import { useDadosComuns } from '@contexts/dadosComuns/useDadosComuns'
 import { converterDinheiroEmFloat, delay } from '@utils/util'
 import { IPagination, Page } from '@models/pagination'
-import { api } from '@pages/api/api'
+import { api } from '@apis/api'
 import { useMesAno } from '@contexts/mesAno/useMesAno'
 
 export type PessoaDivisaoDiferenteForm = {

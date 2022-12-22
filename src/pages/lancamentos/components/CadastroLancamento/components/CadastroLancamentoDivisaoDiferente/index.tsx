@@ -4,12 +4,9 @@ import { NumericFormat } from 'react-number-format'
 import { converterDinheiroEmFloat } from '@utils/util'
 import { useDebouncedCallback } from 'use-debounce'
 import { useDadosComuns } from '@contexts/dadosComuns/useDadosComuns'
-import { useCadastroCompra } from '@pages/lancamentos/contexts/lancamentos/useCadastroCompra'
+import { useCadastroCompra } from '@contexts/lancamentos/useCadastroCompra'
 
-type CadastroLancamentoDivisaoDiferenteProps = {}
-export const CadastroLancamentoDivisaoDiferente: React.FC<
-	CadastroLancamentoDivisaoDiferenteProps
-> = ({}) => {
+export const CadastroLancamentoDivisaoDiferente: React.FC = () => {
 	const { pessoas } = useDadosComuns()
 	const {
 		form,
