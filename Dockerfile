@@ -30,6 +30,8 @@ RUN yarn build
 # If using npm comment out above and use below instead
 # RUN npm run build
 
+
+
 # Production image, copy all the files and run next
 FROM node:16-alpine AS runner
 WORKDIR /web
