@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import moment from 'moment'
 import { Col, List, notification, Row, Tooltip, Typography } from 'antd'
-import { delay, formatarDinheiro } from '@utils/util'
+import { formatarDinheiro } from '@utils/util'
 import { grey } from '@ant-design/colors'
 import { api } from '@apis/api'
 import { Page } from '@models/pagination'
@@ -17,7 +17,6 @@ const ListaUltimasCompras: React.FC = () => {
 		try {
 			setLoading(true)
 
-			await delay(100)
 			const { data } = await api.get<Page<FaturaItem>>('faturas/fatura-atual', {
 				params: {
 					page: 1,

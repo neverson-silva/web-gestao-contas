@@ -1,17 +1,11 @@
 import type { Moment } from 'moment'
 import momentGenerateConfig from 'rc-picker/lib/generate/moment'
 import generatePicker, {
-	PickerLocale,
 	PickerProps,
-	RangePickerProps,
 } from 'antd/lib/date-picker/generatePicker'
-import React, { useCallback, useMemo } from 'react'
-import { PickerComponentClass } from 'antd/lib/date-picker/generatePicker/interface'
+import React, { useCallback } from 'react'
 import 'moment/locale/pt-br'
 import locale from 'antd/lib/date-picker/locale/pt_PT'
-import { SizeType } from 'antd/lib/config-provider/SizeContext'
-import { PickerTimeProps as RCPickerTimeProps } from 'rc-picker/lib/Picker'
-import { ButtonSize } from 'antd/lib/button'
 
 const Component = generatePicker<Moment>(momentGenerateConfig)
 

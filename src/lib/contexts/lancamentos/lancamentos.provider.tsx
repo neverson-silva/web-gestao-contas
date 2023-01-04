@@ -9,7 +9,7 @@ import React, {
 	useState,
 } from 'react'
 import { useDadosComuns } from '@contexts/dadosComuns/useDadosComuns'
-import { converterDinheiroEmFloat, delay } from '@utils/util'
+import { converterDinheiroEmFloat } from '@utils/util'
 import { IPagination, Page } from '@models/pagination'
 import { api } from '@apis/api'
 import { useMesAno } from '@contexts/mesAno/useMesAno'
@@ -170,7 +170,6 @@ const LancamentosProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	}) => {
 		try {
 			setLoadingBusca(true)
-			await delay(200)
 			const page = params?.reset ? 1 : params?.page ?? pager.current
 			const size = params?.size ?? pager.pageSize
 

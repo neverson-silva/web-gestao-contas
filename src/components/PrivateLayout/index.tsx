@@ -17,6 +17,7 @@ import {
 } from 'antd'
 import React, { useState } from 'react'
 import { useAuth } from '@contexts/auth/useAuth'
+
 const { Header, Sider, Content } = Layout
 
 type PrivateLayoutProps = {

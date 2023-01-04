@@ -194,8 +194,13 @@ const CadastroLancamentoPrincipal: React.FC<
 						<Select
 							allowClear={false}
 							showArrow
-							placeholder={'Selecione uma pessoa'}
+							placeholder={'Selecione uma forma de pagamento'}
 							showSearch={true}
+							filterOption={(inputValue, option) => {
+								return (option?.label?.toLowerCase() ?? '').includes(
+									inputValue?.toLowerCase()?.trim(),
+								)
+							}}
 							options={formasPagamentos.map((formaPagamento) => ({
 								value: formaPagamento.id,
 								label: formaPagamento.nome,

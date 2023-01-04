@@ -15,7 +15,7 @@ import {
 import { api } from '@apis/api'
 import { IPagination, Page } from '@models/pagination'
 import { FaturaItem, Pessoa } from '@models/faturaItem'
-import { beautyNumber, delay, formatarDinheiro, isCartao } from '@utils/util'
+import { beautyNumber, formatarDinheiro, isCartao } from '@utils/util'
 import moment from 'moment'
 import { ColumnsType } from 'antd/lib/table'
 import { grey } from '@ant-design/colors'
@@ -48,7 +48,6 @@ const DetalhesFaturaPessoa: React.FC<DetalhesFaturaPessoaProps> = ({
 	) => {
 		try {
 			setLoading(true)
-			await delay(1000)
 			const { data } = await api.get<Page<FaturaItem>>(
 				'faturas/buscar-itens-fatura',
 				{

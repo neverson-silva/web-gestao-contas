@@ -17,7 +17,6 @@ import { useMesAno } from '@contexts/mesAno/useMesAno'
 import { api } from '@apis/api'
 import { useAuth } from '@contexts/auth/useAuth'
 import { ResumoFormaPagamentosDTO } from '@models/resumoFormasPagamentos'
-import { delay } from '@utils/util'
 import { ResumoFaturaPessoas } from '@models/resumoFaturaPessoas'
 import Head from '@components/Head'
 import Estatisticas from '@pages/dashboard/components/Estatisticas'
@@ -48,7 +47,6 @@ const DashboardPage: NextPage = () => {
 			const dataSelecionada = toMoment()
 
 			setLoadingEstatisticas(true)
-			await delay(500)
 			const { data } = await api.get<ResumoFormaPagamentosDTO>(
 				`dashboard/resumo-pagamentos/${usuario?.pessoa.id}`,
 				{
@@ -74,7 +72,6 @@ const DashboardPage: NextPage = () => {
 			}
 
 			setInitLoading(true)
-			await delay(200)
 			const { data } = await api.get('dashboard/resumo-fatura-pessoas', {
 				params: {
 					mesReferencia: dataSelecionada.month() + 1,

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Column } from '@ant-design/plots'
 import { notification } from 'antd'
 import { ColumnConfig } from '@ant-design/plots/es/components/column'
-import { delay, formatarDinheiro } from '@utils/util'
+import { formatarDinheiro } from '@utils/util'
 import { useMesAno } from '@contexts/mesAno/useMesAno'
 import { MesAnoContextData } from '@contexts/mesAno/mesAno.provider'
 import { GraficoDadosPorFormaPagamento } from '@models/graficoDadosPorFormaPagamento'
@@ -27,7 +27,6 @@ const GastosMensaisPorCartaoColuna = () => {
 	) => {
 		try {
 			setLoading(true)
-			await delay(400)
 			const { data } = await api.get<GraficoDadosPorFormaPagamento[]>(
 				'dashboard/grafico/gastos-por-cartao',
 				{

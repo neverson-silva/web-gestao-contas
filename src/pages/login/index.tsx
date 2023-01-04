@@ -23,7 +23,7 @@ const LoginPage: NextPage = () => {
 
 	return (
 		<>
-			<Head title={'Seja bem-vinoo'} />
+			<Head title={'Seja bem-vindo'} />
 			<div
 				style={{
 					height: '100vh',

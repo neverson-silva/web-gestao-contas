@@ -12,7 +12,7 @@ import {
 } from 'antd'
 import { grey } from '@ant-design/colors'
 import moment from 'moment/moment'
-import { beautyNumber, delay, formatarDinheiro } from '@utils/util'
+import { beautyNumber, formatarDinheiro } from '@utils/util'
 import IconMenuKebab from '@components/Icons/IconMenuKebab'
 import { api } from '@apis/api'
 import { useBuscaLancamento } from '@contexts/lancamentos/useBuscaLancamento'
@@ -49,7 +49,6 @@ const ItemListaCompra: React.FC<ItemListaCompra> = ({
 	const handleExcluirClick = async (pCompra: FaturaItem) => {
 		try {
 			setLoadingExcluindo(true)
-			await delay(100)
 			await api.delete(`lancamentos/${pCompra.lancamento.id}`)
 			await buscarLancamentosAtual({ reset: true })
 
@@ -184,7 +183,7 @@ const ItemListaCompra: React.FC<ItemListaCompra> = ({
 								wordBreak: 'break-all',
 							}}
 						>
-							{compra.dividido
+							{compra.dividido && compra.divisaoId === 2
 								? `${compra.nome} - Total ${formatarDinheiro(
 										compra.lancamento.valor,
 								  )}`

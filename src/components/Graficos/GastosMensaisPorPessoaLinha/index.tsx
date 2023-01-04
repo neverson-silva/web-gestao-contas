@@ -6,7 +6,7 @@ import { MesAnoContextData } from '@contexts/mesAno/mesAno.provider'
 import { notification } from 'antd'
 import { api } from '@apis/api'
 import { DadosGraficoPorPessoa } from '@models/graficoDadosPorPessoa'
-import { delay, formatarDinheiro } from '@utils/util'
+import { formatarDinheiro } from '@utils/util'
 import { LineConfig } from '@ant-design/plots/es/components/line'
 
 type GastosMensaisPorPessoaLinhaDataset = {
@@ -54,7 +54,6 @@ const GastosMensaisPorPessoaLinha = ({}) => {
 	const buscarDadosGrafico = async (pMesAno: MesAnoContextData) => {
 		try {
 			setLoading(true)
-			await delay(400)
 			const { data } = await api.get<DadosGraficoPorPessoa[]>(
 				'dashboard/grafico/gastos-por-pessoa',
 				{

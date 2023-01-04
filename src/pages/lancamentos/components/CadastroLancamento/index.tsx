@@ -12,7 +12,7 @@ import {
 import CadastroLancamentoPrincipal from '@pages/lancamentos/components/CadastroLancamento/components/CadastroLancamentoPrincipal'
 import CadastroLancamentoDivisaoDiferente from '@pages/lancamentos/components/CadastroLancamento/components/CadastroLancamentoDivisaoDiferente'
 import moment from 'moment'
-import { converterDinheiroEmFloat, delay, formatarDinheiro } from '@utils/util'
+import { converterDinheiroEmFloat, formatarDinheiro } from '@utils/util'
 import { CadastroFormValues } from '@contexts//lancamentos/lancamentos.provider'
 import { useCadastroCompra } from '@contexts//lancamentos/useCadastroCompra'
 import { api } from '@apis/api'
@@ -94,7 +94,6 @@ const CadastroLancamento: React.FC<CadastroLancamentoProps> = ({
 				quantidadeParcelas: formulario.quantidadeParcelas,
 				dataCompra: moment(formulario.dataCompra).format('YYYY-MM-DD'),
 			}
-			await delay(100)
 
 			if (compra) {
 				await api.put(`lancamentos/${compra.lancamento.id}`, payload)

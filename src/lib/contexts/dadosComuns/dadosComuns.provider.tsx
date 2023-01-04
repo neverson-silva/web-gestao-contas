@@ -6,7 +6,6 @@ import React, {
 	useMemo,
 	useState,
 } from 'react'
-import { delay } from '@utils/util'
 import { api } from '@apis/api'
 import { AxiosError } from 'axios'
 import { notification, Spin } from 'antd'
@@ -37,7 +36,6 @@ const DadosComunsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	const buscarPessoas = async () => {
 		try {
 			setLoading(true)
-			await delay(4000)
 			const { data } = await api.get('pessoas')
 			setPessoas(data)
 		} catch (e) {
