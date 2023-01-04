@@ -224,6 +224,11 @@ const CadastroLancamentoPrincipal: React.FC<
 							placeholder={'Selecione uma pessoa'}
 							// defaultValue={usuario?.pessoa?.id}
 							showSearch={true}
+							filterOption={(inputValue, option) => {
+								return (option?.label?.toLowerCase() ?? '').includes(
+									inputValue?.toLowerCase()?.trim(),
+								)
+							}}
 							onDeselect={() => decidirSePermiteDivisaoDiferente()}
 							onSelect={() => {
 								decidirSePermiteDivisaoDiferente()
