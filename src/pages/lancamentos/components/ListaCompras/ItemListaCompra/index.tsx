@@ -40,8 +40,10 @@ const ItemListaCompra: React.FC<ItemListaCompra> = ({
 				.map((lancamento) => formatarDinheiro(lancamento.valorUtilizado))
 				.join(', ')
 		}
+
 		return formatarDinheiro(compra.valorUtilizado)
 	}, [compra])
+
 	const handleEditarClick = () => {
 		setOpenAtualizacao(true)
 	}
@@ -183,22 +185,28 @@ const ItemListaCompra: React.FC<ItemListaCompra> = ({
 								wordBreak: 'break-all',
 							}}
 						>
-							{compra.dividido && compra.divisaoId === 2
+							{compra.dividido
 								? `${compra.nome} - Total ${formatarDinheiro(
-										compra.lancamento.valor,
+										compra.parcelado
+											? Number(compra.lancamento.valor) /
+													Number(compra.lancamento.quantidadeParcelas)
+											: compra.lancamento.valor,
 								  )}`
 								: compra.nome}
 						</span>
 					</Row>
 					<Row>
 						<Text
-							strong
 							style={{
 								fontSize: 12,
 								color: grey.primary,
 							}}
 						>
-							{compra.formaPagamento?.nome}
+							{compra.parcelado
+								? `parcela ${beautyNumber(
+										compra.parcela?.numero,
+								  )} de ${beautyNumber(compra.lancamento.quantidadeParcelas)}`
+								: 'à vista'}
 						</Text>
 					</Row>
 				</Col>
@@ -261,16 +269,13 @@ const ItemListaCompra: React.FC<ItemListaCompra> = ({
 						}}
 					>
 						<Text
+							strong
 							style={{
 								fontSize: 12,
 								color: grey.primary,
 							}}
 						>
-							{compra.parcelado
-								? `parcela ${beautyNumber(
-										compra.parcela?.numero,
-								  )} de ${beautyNumber(compra.lancamento.quantidadeParcelas)}`
-								: 'à vista'}
+							{compra.formaPagamento?.nome}
 						</Text>
 					</Row>
 				</Col>

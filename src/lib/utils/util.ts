@@ -44,12 +44,9 @@ export const isCartao = (formaPagamento: FormaPagamento) =>
 
 export const converterDinheiroEmFloat = (valor: string): number => {
 	if (valor) {
-		return parseFloat(
-			String(valor)
-				.replace(/[^0-9,.]/g, '')
-				.replace(/[.]/g, '')
-				.replace(',', '.'),
-		)
+		let compativelComParseFloat = String(valor).replace('R$ ', '')
+		compativelComParseFloat = compativelComParseFloat.replace(',', '.')
+		return parseFloat(compativelComParseFloat)
 	}
 	return valor as unknown as number
 }

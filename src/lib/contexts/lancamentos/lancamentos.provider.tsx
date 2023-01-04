@@ -181,7 +181,7 @@ const LancamentosProvider: React.FC<PropsWithChildren> = ({ children }) => {
 						linesPerPage: size,
 						mes: mesAnoAtual.mes,
 						ano: mesAnoAtual.ano,
-						searchKey: formBusca.getFieldValue('search'),
+						searchKey: formBusca.getFieldsValue(true)?.search,
 					},
 				},
 			)

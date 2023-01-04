@@ -63,14 +63,21 @@ const CadastroLancamento: React.FC<CadastroLancamentoProps> = ({
 			setLoading(true)
 
 			const formulario: CadastroFormValues = form.getFieldsValue(true)
+
 			const igualmente = Array.from(formulario.idPessoa).length > 1
+
+			const tempDiff = formDivisaoDiferente?.getFieldsValue(true)?.tempDiff
+
 			const diferente =
-				Array.from(formulario?.pessoasDivididoDiferente ?? []).length > 0
+				Array.from(tempDiff ?? formulario?.pessoasDivididoDiferente ?? [])
+					.length > 0
+
 			const idPessoa = Array.from(formulario.idPessoa)[0]
+			const valor = converterDinheiroEmFloat(formulario.valor as string)
 			const payload = {
 				descricao: formulario.descricao,
 				nome: formulario.nome,
-				valor: converterDinheiroEmFloat(formulario.valor as string),
+				valor,
 				mesReferencia: formulario.idMes,
 				formaPagamentoId: formulario.formaPagamento,
 				idPessoa,
@@ -86,9 +93,10 @@ const CadastroLancamento: React.FC<CadastroLancamentoProps> = ({
 								id: id,
 								valor: 0,
 						  }))
-						: (formulario?.pessoasDivididoDiferente?.filter(
-								(pess) => pess.id !== idPessoa,
-						  ) as any[]),
+						: ((pessoasDiferente?.length > 0
+								? pessoasDiferente
+								: formulario?.pessoasDivididoDiferente
+						  )?.filter((pess: any) => pess.id !== idPessoa) as any[]),
 				},
 				parcelado: formulario.parcelado ?? false,
 				quantidadeParcelas: formulario.quantidadeParcelas,
@@ -141,6 +149,7 @@ const CadastroLancamento: React.FC<CadastroLancamentoProps> = ({
 						}
 					}),
 				)
+
 				formDivisaoDiferente.setFieldsValue({
 					tempDiff: pessoasAdicionar,
 				})

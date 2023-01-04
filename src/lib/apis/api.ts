@@ -6,9 +6,9 @@ import { notification } from 'antd'
 import Router from 'next/router'
 
 export class ApiService {
-	private readonly BASE_URL =
-		'https://api-gestao-contas-eqilywar6a-uc.a.run.app'
-	// private readonly BASE_URL = 'http://localhost:9090'
+	// private readonly BASE_URL =
+	// 'https://api-gestao-contas-eqilywar6a-uc.a.run.app'
+	private readonly BASE_URL = 'http://localhost:9090'
 
 	private _axios: AxiosInstance
 	// private token: string | null

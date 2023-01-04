@@ -208,6 +208,7 @@ const CadastroLancamentoPrincipal: React.FC<
 						></Select>
 					</Form.Item>
 				</Col>
+
 				<Col span={12}>
 					<Form.Item
 						name={'idPessoa'}
@@ -218,9 +219,9 @@ const CadastroLancamentoPrincipal: React.FC<
 						]}
 					>
 						<Select
-							mode={'tags'}
 							allowClear={false}
 							showArrow
+							mode={'multiple'}
 							placeholder={'Selecione uma pessoa'}
 							// defaultValue={usuario?.pessoa?.id}
 							showSearch={true}
