@@ -172,7 +172,7 @@ const DetalhesFaturaPessoa: React.FC<DetalhesFaturaPessoaProps> = ({
 								</Col>
 								<Col xs={24}>
 									<Typography.Text style={{ color: grey.primary }}>
-										Mês anterior: {formatarDinheiro(valorMesAnterior)}
+										Pago mês anterior: {formatarDinheiro(valorMesAnterior)}
 									</Typography.Text>
 								</Col>
 							</Row>

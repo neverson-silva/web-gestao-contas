@@ -14,7 +14,7 @@ const Bloco: React.FC<BlocoProps> = (props) => {
 				...props.style,
 				backgroundColor: 'white',
 				borderRadius: 10,
-				minHeight: 80,
+				// minHeight: 80,
 				width: '100%',
 				padding: 16,
 				marginTop: 8,

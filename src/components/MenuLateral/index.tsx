@@ -46,7 +46,7 @@ const MenuLateral: React.FC<{ collapsed: boolean }> = ({ collapsed }) => {
 					{
 						key: '3',
 						icon: <UploadOutlined />,
-						label: 'Fatura',
+						label: 'Faturas',
 						onClick: () => router.replace('/faturas'),
 					},
 				]}

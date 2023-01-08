@@ -25,7 +25,7 @@ import { DatePicker } from '@components/Time/Calendars'
 import moment from 'moment'
 
 const DashboardPage: NextPage = () => {
-	const { mes, ano, toMoment, beautify, alterarData } = useMesAno()
+	const { mes, ano, toMoment, beautifyDate, alterarData } = useMesAno()
 	const { usuario } = useAuth()
 	const [loadingEstatisticas, setLoadingEstatisticas] = useState(false)
 	const [resumoFormasPagamentos, setResumoFormasPagamentos] = useState<
@@ -182,7 +182,7 @@ const DashboardPage: NextPage = () => {
 									flexBasis: '65%',
 								}}
 							>
-								<Typography.Title level={5}>{beautify()}</Typography.Title>
+								<Typography.Title level={5}>{beautifyDate()}</Typography.Title>
 							</Col>
 							<Col
 								style={{

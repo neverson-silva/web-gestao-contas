@@ -13,6 +13,7 @@ import { converterDinheiroEmFloat } from '@utils/util'
 import { IPagination, Page } from '@models/pagination'
 import { api } from '@apis/api'
 import { useMesAno } from '@contexts/mesAno/useMesAno'
+import { useRouter } from 'next/router'
 
 export type PessoaDivisaoDiferenteForm = {
 	id: number
@@ -173,6 +174,8 @@ const LancamentosProvider: React.FC<PropsWithChildren> = ({ children }) => {
 			const page = params?.reset ? 1 : params?.page ?? pager.current
 			const size = params?.size ?? pager.pageSize
 
+			const search = formBusca.getFieldsValue(true)?.search
+
 			const { data } = await api.get<Page<FaturaItem>>(
 				'faturas/buscar-itens-fatura',
 				{
@@ -181,7 +184,7 @@ const LancamentosProvider: React.FC<PropsWithChildren> = ({ children }) => {
 						linesPerPage: size,
 						mes: mesAnoAtual.mes,
 						ano: mesAnoAtual.ano,
-						searchKey: formBusca.getFieldsValue(true)?.search,
+						searchKey: search,
 					},
 				},
 			)

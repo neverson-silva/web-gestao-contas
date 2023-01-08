@@ -6,7 +6,7 @@ export type MesAnoContextData = {
 	ano: number | undefined
 	mes: number | undefined
 	meses: Array<{ id: number; nome: string; nomeAbreviado: string }>
-	beautify(): string
+	beautifyDate(): string
 	alterarData(mes: number, ano: number): void
 	toMoment(): Moment | null
 	mesAnoAtual: {
@@ -75,7 +75,7 @@ const MesAnoProvider: React.FC<any> = ({ children }) => {
 		setAno(pAno)
 	}
 
-	const beautify = () => {
+	const beautifyDate = () => {
 		return moment(`${ano}-${mes}-01`).format('MMMM [de] YYYY')
 	}
 
@@ -95,12 +95,12 @@ const MesAnoProvider: React.FC<any> = ({ children }) => {
 			mes,
 			ano,
 			alterarData,
-			beautify,
+			beautifyDate,
 			toMoment,
 			mesAnoAtual,
 			meses,
 		}),
-		[mes, ano, alterarData, beautify, toMoment, meses],
+		[mes, ano, alterarData, beautifyDate, toMoment, meses],
 	)
 	return (
 		<MesAnoContext.Provider value={contextData}>
