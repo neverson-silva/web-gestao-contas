@@ -13,7 +13,7 @@ export const CabecalhoPessoas = () => {
           icon={<PlusOutlined />}
           onClick={() => navigate('pessoas/cadastro')}
         >
-          Novo
+          Adicionar
         </Button>
       </Row>
     </>
