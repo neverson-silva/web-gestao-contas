@@ -6,14 +6,14 @@ export const CabecalhoPessoas = () => {
   const navigate = useNavigate()
   return (
     <>
-      <Row justify="start">
+      <Row justify="end">
         <Button
           size="large"
           type="primary"
           icon={<PlusOutlined />}
           onClick={() => navigate('pessoas/cadastro')}
         >
-          Adicionar
+          Novo
         </Button>
       </Row>
     </>

@@ -1,5 +1,5 @@
-import {Page} from "@models/pagination";
-
+import { Pessoa as AuthPessoa } from "@models/auth";
+import { Page } from "@models/pagination";
 export interface BuscarItensFatura {
 	valorTotal: number
 	itens: Page<FaturaItem>
@@ -73,16 +73,8 @@ export class Mes {
 	dataAlteracao: string
 }
 
-export class Pessoa {
-	id: number
-	nome: string
-	sobrenome: string
-	apelido: string
-	perfil: string
-	sexo: string
-	dataNascimento: string
-	dataCriacao: string
-	dataAlteracao: string
+export class Pessoa  extends AuthPessoa{
+  valorTotal?: number
 }
 
 export class FormaPagamento {

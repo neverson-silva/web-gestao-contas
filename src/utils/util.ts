@@ -1,4 +1,4 @@
-import { FormaPagamento } from '../models/faturaItem'
+import { FormaPagamento, Pessoa } from '../models/faturaItem'
 
 export const toFixedTrunc = (x: string | number, n: number): string => {
 	const v = (typeof x === 'string' ? x : x.toString()).split('.')
@@ -49,4 +49,9 @@ export const converterDinheiroEmFloat = (valor: string): number => {
 		return parseFloat(compativelComParseFloat)
 	}
 	return valor as unknown as number
+}
+
+
+export const getPerfilUrl = (pessoa: Pessoa): string => {
+  return pessoa.perfil ? pessoa.perfil : pessoa.sexo === 'F' ? '/default-avatar-mulher.png' :'/default-avatar.png'
 }

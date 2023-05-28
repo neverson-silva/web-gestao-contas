@@ -11,6 +11,7 @@ import { DashboardPage } from '@pages/dashboard'
 import FaturasPage from '@pages/faturas'
 import LancamentosPage from '@pages/lancamentos'
 import PessoasPage from '@pages/pessoas'
+import { AtualizacaoPessoaPage } from '@pages/pessoas/atualizacao'
 
 export enum EAppRoutes {
   LOGIN = 'login',
@@ -19,6 +20,7 @@ export enum EAppRoutes {
   LANCAMENTOS = 'lancamentos',
   FATURAS = 'faturas',
   PESSOAS = 'pessoas',
+  PESSOAS_ATUALIZACAO = 'pessoas/:id',
 }
 
 export type MenuLateralItem = MenuItemType & {
@@ -34,14 +36,14 @@ export const routes: RouteMenuLateralItem[] = [
     element: <DashboardPage />,
     icon: <DotChartOutlined />,
     key: EAppRoutes.DASHBOARD,
-    roles: ['ROLE_ADMIN', 'ROLE_USER'],
+    roles: ['ROLE_ADMIN', 'ROLE_USUARIO'],
   },
   {
     label: 'Lançamentos',
     path: EAppRoutes.LANCAMENTOS,
     element: <LancamentosPage />,
     key: EAppRoutes.LANCAMENTOS,
-    roles: ['ROLE_ADMIN', 'ROLE_USER'],
+    roles: ['ROLE_ADMIN', 'ROLE_USUARIO'],
     icon: <VideoCameraOutlined />,
   },
   {
@@ -50,6 +52,13 @@ export const routes: RouteMenuLateralItem[] = [
     icon: <UserOutlined />,
     label: 'Pessoas',
     element: <PessoasPage />,
+    roles: ['ROLE_ADMIN'],
+  },
+  {
+    key: EAppRoutes.PESSOAS_ATUALIZACAO,
+    path: EAppRoutes.PESSOAS_ATUALIZACAO,
+    label: 'Atualizar Pessoa',
+    element: <AtualizacaoPessoaPage />,
     roles: ['ROLE_ADMIN'],
   },
   {
