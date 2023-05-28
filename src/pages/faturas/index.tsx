@@ -61,7 +61,7 @@ const FaturasPage: React.FC = () => {
   const colunas: ColumnsType<FaturaItem> = [
     {
       title: 'Data',
-      render: (text, record) =>
+      render: (_, record) =>
         moment(record.lancamento.dataCompra).format('DD/MM/YYYY'),
       dataIndex: '1',
     },
@@ -84,7 +84,7 @@ const FaturasPage: React.FC = () => {
     {
       title: 'Forma de Pagamento',
       align: 'center',
-      render: (_, { formaPagamento, pessoa }) => (
+      render: (_, { formaPagamento }) => (
         <Tag color={'blue'}>{formaPagamento.nome}</Tag>
       ),
     },

@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom'
 
 export const LoginPage: React.FC = () => {
   const [form] = Form.useForm()
-  const { login, isAuthenticated, logout } = useAuth()
+  const { login, logout } = useAuth()
 
   const navigate = useNavigate()
 

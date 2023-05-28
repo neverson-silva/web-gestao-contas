@@ -50,7 +50,7 @@ const ListaUltimasCompras: React.FC = () => {
       loadMore={null}
       // size={'large'}
       dataSource={faturaItens}
-      renderItem={(item: FaturaItem, index) => (
+      renderItem={(item: FaturaItem) => (
         <Tooltip title={item.lancamento?.descricao}>
           <div
             style={{

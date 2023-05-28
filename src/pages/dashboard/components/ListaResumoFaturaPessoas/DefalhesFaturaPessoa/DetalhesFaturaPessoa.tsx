@@ -19,8 +19,6 @@ import { ColumnsType } from 'antd/lib/table'
 import moment from 'moment'
 import React, { useCallback, useEffect, useMemo } from 'react'
 
-const { Text } = Typography
-
 export interface DetalhesFaturaPessoaProps extends ComponentParamsWithSettings {
   idPessoa: number
   valorTotal: number
@@ -78,7 +76,7 @@ const DetalhesFaturaPessoa: React.FC<DetalhesFaturaPessoaProps> = ({
   const colunas: ColumnsType<FaturaItem> = [
     {
       title: 'Data',
-      render: (text, record) =>
+      render: (_, record) =>
         moment(record.lancamento.dataCompra).format('DD/MM/YYYY'),
       dataIndex: '1',
     },
