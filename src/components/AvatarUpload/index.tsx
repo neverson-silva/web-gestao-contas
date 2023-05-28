@@ -11,7 +11,7 @@ import { useState } from 'react'
 
 type AvatarUploadProps = {
   pessoa: Pessoa
-  onChange: (file: UploadFile) => Promise<string>
+  //   onChange: (file: UploadFile) => Promise<string>
 }
 
 const getBase64 = (img: RcFile, callback: (url: string) => void) => {
@@ -34,7 +34,7 @@ const beforeUpload = (file: RcFile) => {
 
 export const AvatarUpload: React.FC<AvatarUploadProps> = ({
   pessoa,
-  onChange,
+  //   onChange,
 }) => {
   const [loading, setLoading] = useState(false)
   const [imageUrl, setImageUrl] = useState<string>(pessoa.perfil)
@@ -44,7 +44,7 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
   ) => {
     if (info.file.status === 'uploading') {
       setLoading(true)
-      onChange(info.file).then((res) => setImageUrl(res))
+      //   onChange(info.file).then((res) => setImageUrl(res))
       return
     }
     if (info.file.status === 'done') {

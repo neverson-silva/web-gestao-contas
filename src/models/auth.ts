@@ -11,4 +11,5 @@ export class Pessoa {
 	sobrenome: string
 	dataNascimento: Date
 	perfil: string
+  sexo: string
 }

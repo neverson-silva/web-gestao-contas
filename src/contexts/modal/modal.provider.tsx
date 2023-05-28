@@ -61,7 +61,7 @@ const ModalProvider: React.FC<any> = ({ children }) => {
 				}}
 				width={settings.width}
 				{...settings}
-				footer={!!settings.footer ? settings.footer : null}
+				footer={settings.footer ? settings.footer : null}
 			>
 				{contentModal}
 			</Modal>
