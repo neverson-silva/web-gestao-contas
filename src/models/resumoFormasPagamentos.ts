@@ -1,13 +1,13 @@
 export interface ResumoFormaPagamentosDTO {
-	cartao: ResumoFormaPagamento
-	dinheiro: ResumoFormaPagamento
-	parcelado: ResumoFormaPagamento
-	total: ResumoFormaPagamento
+  cartao: ResumoFormaPagamento
+  dinheiro: ResumoFormaPagamento
+  parcelado: ResumoFormaPagamento
+  total: ResumoFormaPagamento
 }
 
 export interface ResumoFormaPagamento {
-	titulo: string
-	valor: number
-	porcentagem: number
-	corIcone: string
+  titulo: string
+  valor: number
+  porcentagem: number
+  corIcone: string
 }

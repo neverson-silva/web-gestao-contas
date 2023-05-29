@@ -9,11 +9,11 @@ import {
   Avatar,
   Col,
   Dropdown,
+  notification,
   Popconfirm,
   Row,
   Tooltip,
   Typography,
-  notification,
 } from 'antd'
 import { AxiosError } from 'axios'
 import moment from 'moment/moment'

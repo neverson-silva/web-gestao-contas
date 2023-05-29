@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react'
-
 import { Column } from '@ant-design/plots'
 import { ColumnConfig } from '@ant-design/plots/es/components/column'
 import { api } from '@apis/api'
@@ -9,6 +7,7 @@ import { useMesAno } from '@contexts/mesAno/useMesAno'
 import { GraficoDadosPorFormaPagamento } from '@models/graficoDadosPorFormaPagamento'
 import { formatarDinheiro } from '@utils/util'
 import { notification } from 'antd'
+import { useEffect, useState } from 'react'
 
 type GastosMensaisPorCartaoColunaDataset = {
   label: string

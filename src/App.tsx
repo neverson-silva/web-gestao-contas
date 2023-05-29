@@ -2,12 +2,12 @@ import '@utils/extensions'
 import { ConfigProvider } from 'antd'
 import 'antd/dist/reset.css'
 import ptBR from 'antd/lib/locale/pt_BR'
-import { useEffect } from 'react'
-import WebFont from 'webfontloader'
-import './App.css'
 
 import moment from 'moment'
 import 'moment/locale/pt-br'
+import { useEffect } from 'react'
+import WebFont from 'webfontloader'
+import './App.css'
 import { AppProviders } from './AppProviders'
 
 moment.locale('pt-br', {
@@ -27,7 +27,7 @@ moment.locale('pt-br', {
   ],
 })
 
-function App() {
+const App = () => {
   useEffect(() => {
     WebFont.load({
       google: {

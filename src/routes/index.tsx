@@ -6,8 +6,8 @@ import { useAuth } from '@contexts/auth/useAuth'
 import { LoginPage } from '@pages/login'
 import {
   Navigate,
-  Routes as ReactRouterDomRoutes,
   Route,
+  Routes as ReactRouterDomRoutes,
 } from 'react-router-dom'
 import { RouteMenuLateralItem, routes } from './routes'
 
@@ -65,29 +65,3 @@ export const Routes = () => {
     </>
   )
 }
-
-/*
-<PrivateLayout>
-        
-      <ReactRouterDomRoutes>
-        {routes.map((route, index) => {
-          return (
-            <Route
-              {...route}
-              element={<Component route={route} key={index} />}
-            />
-          )
-        })}
-        <Route path="login" element={<LoginPage />} />
-        <Route
-          path="*"
-          element={
-            isSomeHowAuthenticated ? (
-              <NotFound />
-            ) : (
-              <Navigate to={'/login'} replace />
-            )
-          }
-        />
-      </ReactRouterDomRoutes>
-    </PrivateLayout> */

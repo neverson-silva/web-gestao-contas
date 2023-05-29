@@ -11,9 +11,9 @@ import {
   Divider,
   Drawer,
   Form,
+  notification,
   Row,
   Typography,
-  notification,
 } from 'antd'
 import moment from 'moment'
 import React, { useEffect, useState } from 'react'
@@ -114,7 +114,6 @@ const CadastroLancamento: React.FC<CadastroLancamentoProps> = ({
         description: 'Lançamento cadastrado com sucesso!',
       })
     } catch (e) {
-      console.log(e)
       notification.error({
         description:
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -134,7 +133,7 @@ const CadastroLancamento: React.FC<CadastroLancamentoProps> = ({
     if (compra?.dividido && Array.isArray(compra.itensRelacionados)) {
       if (compra.divisaoId === EDivisaoLancamentoTipo.IGUALMENTE) {
         idsPessoas.push(
-          ...compra?.itensRelacionados?.map((item) => item?.pessoa?.id)
+          ...compra.itensRelacionados.map((item) => item.pessoa.id)
         )
       } else {
         setIsDivididoDiferente(true)

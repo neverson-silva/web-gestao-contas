@@ -8,12 +8,12 @@ import {
   Avatar,
   Col,
   Divider,
+  notification,
   Row,
   Skeleton,
   Table,
   Tag,
   Typography,
-  notification,
 } from 'antd'
 import { ColumnsType } from 'antd/lib/table'
 import moment from 'moment'

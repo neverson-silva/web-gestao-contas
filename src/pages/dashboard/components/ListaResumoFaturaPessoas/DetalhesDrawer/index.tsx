@@ -1,15 +1,15 @@
 import { grey } from '@ant-design/colors'
-import { FormaPagamento, Pessoa } from '@models/faturaItem'
-import { ResumoFatura } from '@models/resumoFaturaPessoas'
-import { formatarDinheiro } from '@utils/util'
-import { Avatar, Col, List, Row, Typography } from 'antd'
-import React from 'react'
 
 import {
   BankOutlined,
   CreditCardOutlined,
   DollarCircleOutlined,
 } from '@ant-design/icons'
+import { FormaPagamento, Pessoa } from '@models/faturaItem'
+import { ResumoFatura } from '@models/resumoFaturaPessoas'
+import { formatarDinheiro } from '@utils/util'
+import { Avatar, Col, List, Row, Typography } from 'antd'
+import React from 'react'
 
 export type DetalhesDrawerProps = {
   pessoa: Pessoa

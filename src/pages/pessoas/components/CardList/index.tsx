@@ -3,6 +3,7 @@ import { formatarDinheiro, getPerfilUrl } from '@utils/util'
 import { Card } from 'antd'
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+
 const { Meta } = Card
 
 type CardListProps = {

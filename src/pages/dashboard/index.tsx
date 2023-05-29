@@ -9,6 +9,8 @@ import { api } from '@apis/api'
 import Bloco from '@components/Bloco'
 import GastosMensaisPorCartaoColuna from '@components/Graficos/GastosMensaisPorCartaoColuna'
 import GastosMensaisPorPessoaLinha from '@components/Graficos/GastosMensaisPorPessoaLinha'
+
+import { DatePicker } from '@components/Time/Calendars'
 import { useAuth } from '@contexts/auth/useAuth'
 import { useMesAno } from '@contexts/mesAno/useMesAno'
 import { ResumoFaturaPessoas } from '@models/resumoFaturaPessoas'
@@ -16,11 +18,9 @@ import { ResumoFormaPagamentosDTO } from '@models/resumoFormasPagamentos'
 import Estatisticas from '@pages/dashboard/components/Estatisticas'
 import ListaResumoFaturaPessoas from '@pages/dashboard/components/ListaResumoFaturaPessoas'
 import ListaUltimasCompras from '@pages/dashboard/components/ListaUltimasCompras'
-import { Card, Col, Row, Typography, notification } from 'antd'
-import { useEffect, useMemo, useState } from 'react'
-
-import { DatePicker } from '@components/Time/Calendars'
+import { Card, Col, notification, Row, Typography } from 'antd'
 import moment from 'moment'
+import { useEffect, useMemo, useState } from 'react'
 
 export const DashboardPage: React.FC = () => {
   const { mes, ano, toMoment, beautifyDate, alterarData } = useMesAno()

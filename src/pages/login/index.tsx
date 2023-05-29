@@ -29,7 +29,7 @@ export const LoginPage: React.FC = () => {
 
   useEffect(() => {
     logout()
-  }, [])
+  }, [logout])
 
   return (
     <>

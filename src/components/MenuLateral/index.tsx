@@ -21,7 +21,7 @@ const MenuAppLateral: React.FC<MenuLateralProps> = ({
       {...rest}
       items={items?.filter(
         (item: MenuLateralItem) =>
-          !item?.roles || (hasRole && hasRole(...item?.roles))
+          !item?.roles || (hasRole && hasRole(...item.roles))
       )}
     />
   )

@@ -1,6 +1,3 @@
-import { MenuItemType } from 'antd/es/menu/hooks/useItems'
-import { RouteProps } from 'react-router-dom'
-
 import {
   DotChartOutlined,
   UploadOutlined,
@@ -12,6 +9,8 @@ import FaturasPage from '@pages/faturas'
 import LancamentosPage from '@pages/lancamentos'
 import PessoasPage from '@pages/pessoas'
 import { AtualizacaoPessoaPage } from '@pages/pessoas/atualizacao'
+import { MenuItemType } from 'antd/es/menu/hooks/useItems'
+import { RouteProps } from 'react-router-dom'
 
 export enum EAppRoutes {
   LOGIN = 'login',

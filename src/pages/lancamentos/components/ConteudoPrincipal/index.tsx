@@ -85,13 +85,14 @@ const ConteudoPrincipal: React.FC = () => {
     }
   }, [mesAnoAtual])
 
+  // isso nao funcionou no vite
   useEffect(() => {
     if (query.get('compra')) {
       formBusca.setFieldsValue({
         search: query.get('compra'),
       })
     }
-  }, [query.get('compra')])
+  }, [query, formBusca])
 
   return (
     <>

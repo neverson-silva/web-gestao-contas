@@ -1,10 +1,10 @@
 import { api } from '@apis/api'
 import { FormaPagamento, Pessoa } from '@models/faturaItem'
-import { Spin, notification } from 'antd'
+import { notification, Spin } from 'antd'
 import { AxiosError } from 'axios'
 import React, {
-  PropsWithChildren,
   createContext,
+  PropsWithChildren,
   useEffect,
   useMemo,
   useState,

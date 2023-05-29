@@ -3,7 +3,7 @@ import { api } from '@apis/api'
 import { FaturaItem } from '@models/faturaItem'
 import { Page } from '@models/pagination'
 import { formatarDinheiro } from '@utils/util'
-import { Col, List, Row, Tooltip, Typography, notification } from 'antd'
+import { Col, List, notification, Row, Tooltip, Typography } from 'antd'
 import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 
