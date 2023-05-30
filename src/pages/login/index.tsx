@@ -14,7 +14,7 @@ export const LoginPage: React.FC = () => {
 
   const [loading, setLoading] = useState(false)
 
-  const onLogin = async (params: any) => {
+  const onLogin = async (params: { email: string; senha: string }) => {
     setLoading(true)
 
     const logou = await login(params.email, params.senha)

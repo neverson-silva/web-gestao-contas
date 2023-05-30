@@ -1,8 +1,9 @@
 import { Pessoa } from '@models/faturaItem'
 import { formatarDinheiro, getPerfilUrl } from '@utils/util'
-import { Card } from 'antd'
+import { Card, Skeleton } from 'antd'
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import Bloco from '@components/Bloco'
 
 const { Meta } = Card
 
@@ -21,6 +22,13 @@ export const CardListPessoas: React.FC<CardListProps> = ({ pessoas }) => {
 
   const handleOnClick = (pessoa: Pessoa) => {
     navigate(`/pessoas/${pessoa.id}`, { state: { pessoa } })
+  }
+  if (!pessoas) {
+    return (
+      <Bloco>
+        <Skeleton active={true} />
+      </Bloco>
+    )
   }
 
   return (

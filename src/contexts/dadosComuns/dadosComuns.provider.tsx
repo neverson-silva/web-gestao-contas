@@ -17,6 +17,7 @@ import MyComponent from 'react-fullpage-custom-loader'
 export type DadosComunsContextData = {
   pessoas: Pessoa[]
   formasPagamentos: FormaPagamento[]
+  buscarPessoas: () => Promise<void>
 }
 
 export const DadosComunsContext = createContext<DadosComunsContextData>(
@@ -75,8 +76,9 @@ const DadosComunsProvider: React.FC<PropsWithChildren> = ({ children }) => {
     () => ({
       pessoas,
       formasPagamentos,
+      buscarPessoas,
     }),
-    [formasPagamentos, pessoas]
+    [formasPagamentos, pessoas, buscarPessoas]
   )
 
   useEffect(() => {

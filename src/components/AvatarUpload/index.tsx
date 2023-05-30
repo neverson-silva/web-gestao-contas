@@ -1,4 +1,3 @@
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons'
 import { Pessoa } from '@models/auth'
 import { message } from 'antd'
 import Upload, {
@@ -7,10 +6,14 @@ import Upload, {
   UploadFile,
   UploadProps,
 } from 'antd/es/upload'
-import { useState } from 'react'
+import React, { useMemo, useState } from 'react'
+import ImgCrop from 'antd-img-crop'
+import { isValidValue } from '@utils/util.ts'
+import { UploadProfileWrapper } from '@components/AvatarUpload/components/UploadProfileWrapper'
 
 type AvatarUploadProps = {
   pessoa: Pessoa
+  size?: number
   //   onChange: (file: UploadFile) => Promise<string>
 }
 
@@ -34,10 +37,16 @@ const beforeUpload = (file: RcFile) => {
 
 export const AvatarUpload: React.FC<AvatarUploadProps> = ({
   pessoa,
+  size,
   //   onChange,
 }) => {
   const [loading, setLoading] = useState(false)
   const [imageUrl, setImageUrl] = useState<string>(pessoa.perfil)
+
+  const temFotoPerfil = useMemo(
+    () => isValidValue(pessoa?.perfil),
+    [pessoa?.perfil]
+  )
 
   const handleChange: UploadProps['onChange'] = (
     info: UploadChangeParam<UploadFile>
@@ -55,37 +64,46 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
       })
     }
   }
-
-  const uploadButton = (
-    <div>
-      {loading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </div>
-  )
+  const onPreview = async (file: UploadFile) => {
+    let src = file.url as string
+    if (!src) {
+      src = await new Promise((resolve) => {
+        const reader = new FileReader()
+        reader.readAsDataURL(file.originFileObj as RcFile)
+        reader.onload = () => resolve(reader.result as string)
+      })
+    }
+    const image = new Image()
+    image.src = src
+    const imgWindow = window.open(src)
+    imgWindow?.document.write(image.outerHTML)
+  }
 
   return (
-    <div>
-      <Upload
-        name="avatar"
-        listType="picture-circle"
-        className="avatar-uploader"
-        showUploadList={false}
-        action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-        beforeUpload={beforeUpload}
-        onChange={handleChange}
-      >
-        {imageUrl ? (
+    <ImgCrop rotationSlider modalTitle={'Editar imagem'}>
+      <>
+        <Upload
+          name="perfil"
+          action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+          beforeUpload={beforeUpload}
+          onChange={handleChange}
+          onPreview={onPreview}
+          className={'p-0'}
+        >
+          {!temFotoPerfil && (
+            <UploadProfileWrapper loading={loading} size={size} />
+          )}
+        </Upload>
+        {temFotoPerfil && (
           <img
             src={imageUrl}
-            height={150}
-            width={150}
+            height={size ?? '100%'}
+            width={size ?? '100%'}
             alt="avatar"
             style={{ borderRadius: 100 }}
           />
-        ) : (
-          uploadButton
         )}
-      </Upload>
-    </div>
+      </>
+    </ImgCrop>
   )
 }
