@@ -85,3 +85,15 @@ export const isValidValue = (value: any): boolean => {
 
   return true
 }
+
+export const classNames = (
+  defaultClasses: string,
+  aditionalClasses: { [property: string]: boolean }
+): string => {
+  Object.entries(aditionalClasses).forEach(([classe, value]) => {
+    if (value) {
+      defaultClasses = defaultClasses.concat(` ${classe} `)
+    }
+  })
+  return defaultClasses
+}

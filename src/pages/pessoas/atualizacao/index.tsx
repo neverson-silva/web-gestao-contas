@@ -1,5 +1,5 @@
 import { AvatarUpload } from '@components/AvatarUpload'
-import { Col, Form, Input, Row } from 'antd'
+import { Button, Col, Form, Input, Row } from 'antd'
 import { useLocation } from 'react-router-dom'
 import { Head } from '@components/Head'
 import React, { useEffect } from 'react'
@@ -18,40 +18,51 @@ export const AtualizacaoPessoaPage: React.FC = () => {
   }, [pessoa])
 
   return (
-    <div className={'flex bg-amber-500 justify-center p-4'}>
-      <Form
-        form={form}
-        layout={'vertical'}
-        size={'large'}
-        className={'w-[50%] flex justify-center flex-col items-center'}
-      >
-        <Head title={pessoa.nome} />
+    <Form className={'w-full'} form={form} size={'large'}>
+      <Row gutter={[16, 32]}>
+        <Row className={'w-full  flex justify-center'}>
+          <Col xs={24} sm={24} md={12} className={' flex justify-center'}>
+            <AvatarUpload
+              pessoa={pessoa}
+              size={140}
+              //   onChange={(a) => console.log('arquivo', a)}
+            />
+          </Col>
+        </Row>
 
-        <div>
-          <AvatarUpload
-            pessoa={pessoa}
-            size={140}
-            //   onChange={(a) => console.log('arquivo', a)}
-          />
-        </div>
-        <div className={'w-[80%]'}>
-          <Form.Item
-            label={'Nome'}
-            name={'nome'}
-            rules={[{ required: true, message: 'Informe o nome' }]}
-          >
-            <Input placeholder={'Maria Joana'} />
-          </Form.Item>
-          <Form.Item
-            label={'Sobrenome'}
-            name={'sobrenome'}
-            rules={[{ required: true, message: 'Informe o nome' }]}
-          >
-            <Input placeholder={'Maria Joana'} />
-          </Form.Item>
-        </div>
-      </Form>
-    </div>
+        <Row className={'w-full flex justify-center'} gutter={[16, 0]}>
+          <Col xs={24} sm={24} md={6} className={'flex justify-center w-full'}>
+            <Form.Item name={'nome'} noStyle>
+              <Input placeholder={'Maria'} />
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={24} md={6} className={'flex justify-center w-full'}>
+            <Form.Item name={'sobrenome'} noStyle>
+              <Input placeholder={'Joana da Silva'} />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row className={'w-full flex justify-center'} gutter={[16, 0]}>
+          <Col xs={24} sm={24} md={6} className={'flex justify-center w-full'}>
+            <Form.Item name={'apelido'} noStyle>
+              <Input placeholder={'Joana da Silva'} />
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={24} md={6} className={'flex justify-center w-full'}>
+            <Form.Item name={'dataNascimento'} noStyle>
+              <Input />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row className={'w-full flex justify-center'} gutter={[16, 0]}>
+          <Col xs={24} sm={24} md={6}></Col>
+          <Col xs={24} sm={24} md={6} className={'flex justify-end'}>
+            <Button type={'primary'}>Atualizar</Button>
+          </Col>
+        </Row>
+      </Row>
+    </Form>
   )
   return (
     <>
@@ -65,7 +76,7 @@ export const AtualizacaoPessoaPage: React.FC = () => {
               //   onChange={(a) => console.log('arquivo', a)}
             />
           </Col>
-          <Col xs={24} sm={24} md={18} lg={20}>
+          <Col xs={24} sm={24} md={16} lg={20}>
             <Row gutter={[20, 0]}>
               <Col xs={12}>
                 <Form.Item
