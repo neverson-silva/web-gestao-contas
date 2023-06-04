@@ -1,8 +1,10 @@
+import { isValidValue } from '@utils/util'
 import generatePicker, {
   PickerProps,
 } from 'antd/lib/date-picker/generatePicker'
 import locale from 'antd/lib/date-picker/locale/pt_PT'
 import type { Moment } from 'moment'
+import moment from 'moment'
 import 'moment/locale/pt-br'
 import momentGenerateConfig from 'rc-picker/lib/generate/moment'
 import React, { useCallback } from 'react'
@@ -32,11 +34,26 @@ export type DatePickerProps = {
 
 const DatePicker: React.FC<DatePickerProps> = (props) => {
   const { defaultValue, value } = props
+
+  const defaultDate =
+    isValidValue(defaultValue) && moment(defaultValue).isValid()
+      ? moment(defaultValue)
+      : undefined
+
+  const currentDate =
+    isValidValue(value) && moment(value).isValid() ? moment(value) : undefined
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const DatePickerMemo = useCallback(() => {
-    return <Component {...props} locale={locale} />
-  }, [defaultValue, value])
+    return (
+      <Component
+        {...props}
+        defaultValue={defaultDate}
+        value={currentDate}
+        locale={locale}
+      />
+    )
+  }, [defaultDate, currentDate])
 
   return <DatePickerMemo />
 }

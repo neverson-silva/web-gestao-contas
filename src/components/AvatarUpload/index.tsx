@@ -1,5 +1,8 @@
+import { UploadProfileWrapper } from '@components/AvatarUpload/components/UploadProfileWrapper'
 import { Pessoa } from '@models/auth'
-import { message } from 'antd'
+import { isValidValue } from '@utils/util.ts'
+import { Button, message } from 'antd'
+import ImgCrop from 'antd-img-crop'
 import Upload, {
   RcFile,
   UploadChangeParam,
@@ -7,9 +10,6 @@ import Upload, {
   UploadProps,
 } from 'antd/es/upload'
 import React, { useMemo, useState } from 'react'
-import ImgCrop from 'antd-img-crop'
-import { isValidValue } from '@utils/util.ts'
-import { UploadProfileWrapper } from '@components/AvatarUpload/components/UploadProfileWrapper'
 
 type AvatarUploadProps = {
   pessoa: Pessoa
@@ -66,6 +66,8 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
   }
   const onPreview = async (file: UploadFile) => {
     let src = file.url as string
+
+    console.log('calling on preview')
     if (!src) {
       src = await new Promise((resolve) => {
         const reader = new FileReader()
@@ -79,31 +81,43 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
     imgWindow?.document.write(image.outerHTML)
   }
 
+  const uploaded = async (arquivo: RcFile) => {
+    console.log('uploading image', arquivo)
+    return 'lll'
+  }
+
   return (
     <ImgCrop rotationSlider modalTitle={'Editar imagem'}>
-      <>
-        <Upload
-          name="perfil"
-          action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-          beforeUpload={beforeUpload}
-          onChange={handleChange}
-          onPreview={onPreview}
-          className={'p-0'}
-        >
-          {!temFotoPerfil && (
-            <UploadProfileWrapper loading={loading} size={size} />
-          )}
-        </Upload>
-        {temFotoPerfil && (
-          <img
-            src={imageUrl}
-            height={size ?? '100%'}
-            width={size ?? '100%'}
-            alt="avatar"
-            style={{ borderRadius: 100 }}
-          />
+      <Upload
+        name="perfil"
+        action={uploaded}
+        //   action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+        beforeUpload={beforeUpload}
+        onChange={handleChange}
+        onPreview={onPreview}
+        showUploadList={false}
+      >
+        {!temFotoPerfil && (
+          <UploadProfileWrapper loading={loading} size={120} />
         )}
-      </>
+        {temFotoPerfil && (
+          <>
+            <div className="cursor-pointer">
+              <img
+                className="opacity-100 hover:opacity-70 hover:border-[1.5px] hover:border-gray-500 hover:border-dashed"
+                src={imageUrl}
+                height={size ?? '100%'}
+                width={size ?? '100%'}
+                alt="avatar"
+                style={{ borderRadius: 100 }}
+              />
+            </div>
+            <div className="flex justify-center capitalize mt-3">
+              <Button type="link">Alterar</Button>
+            </div>
+          </>
+        )}
+      </Upload>
     </ImgCrop>
   )
 }

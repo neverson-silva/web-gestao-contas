@@ -7,7 +7,7 @@ import { NumericFormat } from 'react-number-format'
 import { useDebouncedCallback } from 'use-debounce'
 
 export const CadastroLancamentoDivisaoDiferente: React.FC = () => {
-  const { pessoas } = useDadosComuns()
+  const { pessoas } = useDadosComuns();
   const {
     form,
     formDivisaoDiferente,

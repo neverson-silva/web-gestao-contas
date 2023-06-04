@@ -6,8 +6,8 @@ import { useAuth } from '@contexts/auth/useAuth'
 import { LoginPage } from '@pages/login'
 import {
   Navigate,
-  Route,
   Routes as ReactRouterDomRoutes,
+  Route,
 } from 'react-router-dom'
 import { RouteMenuLateralItem, routes } from './routes'
 

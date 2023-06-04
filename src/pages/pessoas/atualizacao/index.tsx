@@ -1,9 +1,10 @@
 import { AvatarUpload } from '@components/AvatarUpload'
-import { Button, Col, Form, Input, Row } from 'antd'
-import { useLocation } from 'react-router-dom'
 import { Head } from '@components/Head'
-import React, { useEffect } from 'react'
+import { DatePicker } from '@components/Time/Calendars'
 import { Pessoa } from '@models/auth.ts'
+import { Button, Col, Form, Input, Row } from 'antd'
+import React, { useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 
 export const AtualizacaoPessoaPage: React.FC = () => {
   const {
@@ -14,7 +15,6 @@ export const AtualizacaoPessoaPage: React.FC = () => {
 
   useEffect(() => {
     form.setFieldsValue(pessoa)
-    console.log('valores do form', form.getFieldsValue(true))
   }, [pessoa])
 
   return (
@@ -51,7 +51,7 @@ export const AtualizacaoPessoaPage: React.FC = () => {
           </Col>
           <Col xs={24} sm={24} md={6} className={'flex justify-center w-full'}>
             <Form.Item name={'dataNascimento'} noStyle>
-              <Input />
+              <DatePicker format={'DD/MM/YYYY'} className="w-full" />
             </Form.Item>
           </Col>
         </Row>
