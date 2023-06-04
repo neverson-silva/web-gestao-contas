@@ -1,27 +1,16 @@
-import { api } from '@apis/api'
 import { UploadProfileWrapper } from '@components/AvatarUpload/components/UploadProfileWrapper'
 import { Pessoa } from '@models/auth'
 import { isValidValue } from '@utils/util.ts'
 import { Button, message } from 'antd'
 import ImgCrop from 'antd-img-crop'
-import Upload, {
-  RcFile,
-  UploadChangeParam,
-  UploadFile,
-  UploadProps,
-} from 'antd/es/upload'
+import Upload, { RcFile, UploadFile } from 'antd/es/upload'
 import React, { useMemo, useState } from 'react'
+import type { UploadRequestOption as RcCustomRequestOptions } from 'rc-upload/lib/interface'
 
 type AvatarUploadProps = {
   pessoa: Pessoa
   size?: number
-  //   onChange: (file: UploadFile) => Promise<string>
-}
-
-const getBase64 = (img: RcFile, callback: (url: string) => void) => {
-  const reader = new FileReader()
-  reader.addEventListener('load', () => callback(reader.result as string))
-  reader.readAsDataURL(img)
+  onChange?: (file: RcFile | Blob | string) => Promise<string>
 }
 
 const beforeUpload = (file: RcFile) => {
@@ -39,32 +28,13 @@ const beforeUpload = (file: RcFile) => {
 export const AvatarUpload: React.FC<AvatarUploadProps> = ({
   pessoa,
   size,
-  //   onChange,
+  onChange,
 }) => {
   const [loading, setLoading] = useState(false)
   const [imageUrl, setImageUrl] = useState<string>(pessoa.perfil)
 
-  const temFotoPerfil = useMemo(
-    () => isValidValue(pessoa?.perfil),
-    [pessoa?.perfil]
-  )
+  const temFotoPerfil = useMemo(() => isValidValue(imageUrl), [imageUrl])
 
-  const handleChange: UploadProps['onChange'] = (
-    info: UploadChangeParam<UploadFile>
-  ) => {
-    if (info.file.status === 'uploading') {
-      setLoading(true)
-      //   onChange(info.file).then((res) => setImageUrl(res))
-      return
-    }
-    if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj as RcFile, (url) => {
-        setLoading(false)
-        setImageUrl(url)
-      })
-    }
-  }
   const onPreview = async (file: UploadFile) => {
     let src = file.url as string
 
@@ -81,31 +51,33 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
     imgWindow?.document.write(image.outerHTML)
   }
 
-  const uploaded = async (arquivo: RcFile) => {
-    console.log('uploading image', arquivo)
+  const uploaded = async (request: RcCustomRequestOptions) => {
+    const { file } = request
 
-    const formData = new FormData()
+    setLoading(true)
 
+    if (onChange) {
+      setImageUrl(await onChange(file))
+    }
+
+    //    const formData = new FormData()
     // Adicione o arquivo ao FormData
-    formData.append('file', arquivo)
-
-    await api.post('/pessoas/upload', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data', // Importante definir o cabeçalho correto
-      },
-    })
-
-    return 'lll'
+    // formData.append('file', arquivo)
+    // const { data } = await api.post('/pessoas/upload', formData, {
+    //   headers: {
+    //     'Content-Type': 'multipart/form-data', // Importante definir o cabeçalho correto
+    //   },
+    // })
+    // setImageUrl(data)
+    setLoading(false)
   }
 
   return (
     <ImgCrop rotationSlider modalTitle={'Editar imagem'}>
       <Upload
         name="perfil"
-        action={uploaded}
-        //   action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+        customRequest={uploaded}
         beforeUpload={beforeUpload}
-        onChange={handleChange}
         onPreview={onPreview}
         showUploadList={false}
       >
