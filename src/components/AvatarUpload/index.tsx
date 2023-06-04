@@ -1,3 +1,4 @@
+import { api } from '@apis/api'
 import { UploadProfileWrapper } from '@components/AvatarUpload/components/UploadProfileWrapper'
 import { Pessoa } from '@models/auth'
 import { isValidValue } from '@utils/util.ts'
@@ -67,7 +68,6 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
   const onPreview = async (file: UploadFile) => {
     let src = file.url as string
 
-    console.log('calling on preview')
     if (!src) {
       src = await new Promise((resolve) => {
         const reader = new FileReader()
@@ -83,6 +83,18 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
 
   const uploaded = async (arquivo: RcFile) => {
     console.log('uploading image', arquivo)
+
+    const formData = new FormData()
+
+    // Adicione o arquivo ao FormData
+    formData.append('file', arquivo)
+
+    await api.post('/pessoas/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data', // Importante definir o cabeçalho correto
+      },
+    })
+
     return 'lll'
   }
 
