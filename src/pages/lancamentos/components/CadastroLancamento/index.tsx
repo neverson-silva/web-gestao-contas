@@ -1,7 +1,11 @@
 import { api } from '@apis/api'
 import { CadastroFormValues } from '@contexts//lancamentos/lancamentos.provider'
 import { useCadastroCompra } from '@contexts//lancamentos/useCadastroCompra'
-import { EDivisaoLancamentoTipo, FaturaItem } from '@models/faturaItem'
+import {
+  EDivisaoLancamentoTipo,
+  FaturaItem,
+  Lancamento,
+} from '@models/faturaItem'
 import CadastroLancamentoDivisaoDiferente from '@pages/lancamentos/components/CadastroLancamento/components/CadastroLancamentoDivisaoDiferente'
 import CadastroLancamentoPrincipal from '@pages/lancamentos/components/CadastroLancamento/components/CadastroLancamentoPrincipal'
 import { converterDinheiroEmFloat, formatarDinheiro } from '@utils/util'
@@ -17,6 +21,7 @@ import {
 } from 'antd'
 import moment from 'moment'
 import React, { useEffect, useState } from 'react'
+import { useBuscaLancamento } from '@contexts/lancamentos/useBuscaLancamento.ts'
 
 export type CadastroLancamentoProps = {
   isOpened: boolean
@@ -43,6 +48,8 @@ const CadastroLancamento: React.FC<CadastroLancamentoProps> = ({
     isDivididoDiferente,
     formDivisaoDiferente,
   } = useCadastroCompra()
+
+  const { addStart } = useBuscaLancamento()
 
   const handleOpenDivisaoDiferente = () => {
     setAbrirDivisaoDiferente(true)
@@ -105,10 +112,25 @@ const CadastroLancamento: React.FC<CadastroLancamentoProps> = ({
 
       if (compra) {
         await api.put(`lancamentos/${compra.lancamento.id}`, payload)
+        handleOnClose(true)
       } else {
-        await api.post('lancamentos', payload)
+        const { data: lancamento } = await api.post<Lancamento>(
+          'lancamentos',
+          payload
+        )
+        const faturaItem: FaturaItem = {
+          lancamento,
+          pessoa: lancamento.pessoa,
+          ano: lancamento.ano,
+          fechamento: lancamento.mes,
+          id: lancamento.id * 2,
+          itensRelacionados: lancamento,
+        } as unknown as FaturaItem
+        addStart(faturaItem)
+
+        console.log('todos os dados que retornou', lancamento)
+        handleOnClose()
       }
-      handleOnClose(true)
       notification.success({
         message: 'Sucesso',
         description: 'Lançamento cadastrado com sucesso!',

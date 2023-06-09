@@ -1,10 +1,11 @@
 import { AvatarUpload } from '@components/AvatarUpload'
-import { Head } from '@components/Head'
 import { DatePicker } from '@components/Time/Calendars'
 import { Pessoa } from '@models/auth.ts'
 import { Button, Col, Form, Input, Row } from 'antd'
 import React, { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
+import { RcFile } from 'antd/es/upload'
+import { api } from '@apis/api.ts'
 
 export const AtualizacaoPessoaPage: React.FC = () => {
   const {
@@ -12,7 +13,18 @@ export const AtualizacaoPessoaPage: React.FC = () => {
   } = useLocation()
 
   const [form] = Form.useForm<Partial<Pessoa>>()
-
+  const enviarFotoPerfil = async (
+    foto: RcFile | Blob | string
+  ): Promise<string> => {
+    const formData = new FormData()
+    formData.append('file', foto)
+    const { data } = await api.patch(`pessoas/upload/${pessoa.id}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data', // Importante definir o cabeçalho correto
+      },
+    })
+    return data
+  }
   useEffect(() => {
     form.setFieldsValue(pessoa)
   }, [pessoa])
@@ -26,7 +38,11 @@ export const AtualizacaoPessoaPage: React.FC = () => {
         >
           <Row className={'w-full  flex justify-center'}>
             <Col xs={24} sm={24} md={16} className={' flex justify-center'}>
-              <AvatarUpload pessoa={pessoa} size={140} />
+              <AvatarUpload
+                pessoa={pessoa}
+                size={140}
+                onUpload={enviarFotoPerfil}
+              />
             </Col>
           </Row>
 
@@ -83,43 +99,5 @@ export const AtualizacaoPessoaPage: React.FC = () => {
         </Row>
       </Form>
     </div>
-  )
-  return (
-    <>
-      <Head title={pessoa.nome} />
-      <Form form={form} layout={'vertical'} size={'large'}>
-        <Row justify={'center'} className={'mx-10'}>
-          <Col xs={24} sm={24} md={6} lg={4}>
-            <AvatarUpload
-              pessoa={pessoa}
-              size={140}
-              //   onChange={(a) => console.log('arquivo', a)}
-            />
-          </Col>
-          <Col xs={24} sm={24} md={16} lg={20}>
-            <Row gutter={[20, 0]}>
-              <Col xs={12}>
-                <Form.Item
-                  label={'Nome'}
-                  name={'nome'}
-                  rules={[{ required: true, message: 'Informe o nome' }]}
-                >
-                  <Input placeholder={'Maria Joana'} />
-                </Form.Item>
-              </Col>
-              <Col xs={12}>
-                <Form.Item
-                  label={'Sobrenome'}
-                  name={'sobrenome'}
-                  rules={[{ required: true, message: 'Informe o nome' }]}
-                >
-                  <Input placeholder={'Maria Joana'} />
-                </Form.Item>
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-      </Form>
-    </>
   )
 }

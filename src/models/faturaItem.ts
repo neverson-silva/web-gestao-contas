@@ -65,6 +65,7 @@ export class Lancamento {
   dividido: boolean
   valorUtilizado: number
   valorPorParcela: number
+  pessoa?: Pessoa
 }
 
 export class Mes {

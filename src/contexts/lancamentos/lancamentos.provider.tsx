@@ -62,6 +62,7 @@ export type BuscaLancamentosContextData = {
   lancamentos: FaturaItem[]
   formBusca: FormInstance<any>
   loadingBusca: boolean
+  addStart: (faturaItem: FaturaItem) => void
   buscarLancamentosAtual: (params?: {
     page?: number
     size?: number
@@ -96,6 +97,7 @@ const LancamentosProvider: React.FC<PropsWithChildren> = ({ children }) => {
     errorMessage,
     data,
     error,
+    addToStart: addStart,
   } = usePagination({
     url: 'faturas/buscar-itens-fatura',
   })
@@ -237,6 +239,7 @@ const LancamentosProvider: React.FC<PropsWithChildren> = ({ children }) => {
       loadingBusca,
       buscarLancamentosAtual,
       formBusca,
+      addStart,
     }),
     [pager, loadingBusca, buscarLancamentosAtual, formBusca]
   )

@@ -1,6 +1,7 @@
 import { api } from '@apis/api'
 import { IPagination, Page } from '@models/pagination'
 import { useEffect, useState } from 'react'
+import { isValidValue } from '@utils/util.ts'
 
 type PaginationConfig = {
   url: string
@@ -21,6 +22,13 @@ type UsePaginationResult<T> = {
   error: boolean
   errorMessage?: string
   pager: IPagination
+  addToStart: (item: T) => void
+  addToEnd: (item: T) => void
+  revalidate: (params: {
+    isInfinite?: boolean
+    params?: Record<string, any>
+    reset?: boolean
+  }) => Promise<void>
   setPage(config: {
     page: number
     itemsPerPage?: number
@@ -145,6 +153,70 @@ export const usePagination = <T,>({
     await fetchData(params)
   }
 
+  const revalidate = async ({
+    isInfinite,
+    params,
+    reset,
+  }: {
+    isInfinite?: boolean
+    params?: Record<string, any>
+    reset?: boolean
+  }): Promise<void> => {
+    let pageFetch = 1
+    const current = pager.current
+    const pageSize = pager.pageSize
+
+    while (pageFetch < current) {
+      await setPage({
+        page: pageFetch,
+        itemsPerPage: pageSize,
+        isInfinite: isInfinite,
+        params,
+        reset: reset,
+        defaultErrorMessage: 'Ocorreu um erro ao obter os dados',
+      })
+      pageFetch++
+    }
+    setPager((old) => ({ ...old, pageSize, current }))
+  }
+
+  const addToEnd = (item: T) => {
+    const hasItems = isValidValue(
+      (itens as unknown as PaginationWithValue<any>)?.itens
+    )
+    const newItems = { ...itens }
+    if (hasItems) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      newItems.itens.content.push(item)
+    } else {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      newItems.content.push(item)
+    }
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    setItens(newItems)
+  }
+
+  const addToStart = (item: T) => {
+    const hasItems = isValidValue(
+      (itens as unknown as PaginationWithValue<any>)?.itens
+    )
+    const newItems = { ...itens }
+    if (hasItems) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      newItems.itens.content.unshift(item)
+    } else {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      newItems.content.unshift(item)
+    }
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    setItens(newItems)
+  }
   useEffect(() => {
     if (confs.loadOnMount && !itens) {
       fetchData({
@@ -162,5 +234,8 @@ export const usePagination = <T,>({
     errorMessage,
     setPage,
     pager,
+    addToEnd,
+    addToStart,
+    revalidate,
   }
 }
