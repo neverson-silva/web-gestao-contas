@@ -2,13 +2,26 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 import { defineConfig } from 'vite'
 import checker from 'vite-plugin-checker'
+import eslint from 'vite-plugin-eslint'
 
 export default defineConfig({
   server: {
     port: 3000,
+    open: true,
   },
   plugins: [
     react(),
+    {
+      // do not fail on serve (i.e. local development)
+      ...eslint({
+        failOnWarning: false,
+        failOnError: true,
+        emitError: true,
+        emitWarning: true,
+      }),
+      apply: 'serve',
+      enforce: 'post',
+    },
     checker({
       // e.g. use TypeScript check
       typescript: true,

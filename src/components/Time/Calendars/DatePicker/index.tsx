@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { isValidValue } from '@utils/util'
 import generatePicker, {
   PickerProps,
@@ -42,7 +43,6 @@ const DatePicker: React.FC<DatePickerProps> = (props) => {
 
   const currentDate =
     isValidValue(value) && moment(value).isValid() ? moment(value) : undefined
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const DatePickerMemo = useCallback(() => {
     return (

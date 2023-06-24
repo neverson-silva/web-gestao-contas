@@ -19,7 +19,7 @@ export const MesAnoContext = React.createContext<MesAnoContextData>(
   {} as unknown as MesAnoContextData
 )
 
-const MesAnoProvider: React.FC<any> = ({ children }) => {
+export const MesAnoProvider: React.FC<any> = React.memo(({ children }) => {
   const [mes, setMes] = useState<number>()
   const [ano, setAno] = useState<number>()
   const [mesAnoAtual, setMesAnoAtual] = useState({
@@ -109,5 +109,4 @@ const MesAnoProvider: React.FC<any> = ({ children }) => {
       {children}
     </MesAnoContext.Provider>
   )
-}
-export default React.memo(MesAnoProvider)
+})
