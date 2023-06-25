@@ -27,7 +27,7 @@ export const AuthContext = createContext<AuthContextData>(
   {} as unknown as AuthContextData
 )
 
-const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
+export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -97,4 +97,3 @@ const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
     </AuthContext.Provider>
   )
 }
-export default AuthProvider

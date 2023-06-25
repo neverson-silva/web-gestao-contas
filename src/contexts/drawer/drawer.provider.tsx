@@ -20,7 +20,7 @@ export const DrawerContext = React.createContext<DrawerContextData<any>>(
   {} as unknown as DrawerContextData<any>
 )
 
-const DrawerProvider: React.FC<any> = ({ children }) => {
+export const DrawerProvider: React.FC<any> = ({ children }) => {
   const [settings, setSettings] = React.useState<DrawerProps>({
     ...defaultSettings,
   })
@@ -70,5 +70,3 @@ const DrawerProvider: React.FC<any> = ({ children }) => {
     </DrawerContext.Provider>
   )
 }
-
-export default DrawerProvider

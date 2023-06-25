@@ -1,8 +1,8 @@
-import AuthProvider from '@contexts/auth/auth.provider'
+import { AuthProvider } from '@contexts/auth/auth.provider'
 import { DadosComunsProvider } from '@contexts/dadosComuns/dadosComuns.provider'
-import DrawerProvider from '@contexts/drawer/drawer.provider'
+import { DrawerProvider } from '@contexts/drawer/drawer.provider'
 import { MesAnoProvider } from '@contexts/mesAno/mesAno.provider'
-import ModalProvider from '@contexts/modal/modal.provider'
+import { ModalProvider } from '@contexts/modal/modal.provider'
 import { BrowserRouter } from 'react-router-dom'
 import { Routes } from './routes'
 

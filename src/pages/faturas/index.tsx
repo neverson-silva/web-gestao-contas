@@ -9,7 +9,7 @@ import { ColumnsType } from 'antd/lib/table'
 import moment from 'moment/moment'
 import React, { useMemo } from 'react'
 
-const FaturasPage: React.FC = () => {
+export const FaturasPage: React.FC = () => {
   const { mes, ano } = useMesAno()
   const [form] = Form.useForm()
 
@@ -120,5 +120,3 @@ const FaturasPage: React.FC = () => {
     </>
   )
 }
-
-export default FaturasPage

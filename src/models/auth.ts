@@ -9,7 +9,8 @@ export class Pessoa {
   id: number
   nome: string
   sobrenome: string
-  dataNascimento: Date
+  dataNascimento?: Date
   perfil: string
   sexo: string
+  apelido?: string
 }

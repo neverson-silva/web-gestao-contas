@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import { CabecalhoPessoas } from './components/Cabecalho'
 import { CardListPessoas } from './components/CardList'
 
-const PessoasPage: React.FC = () => {
+export const PessoasPage: React.FC = () => {
   const { pessoas, buscarPessoas } = useDadosComuns()
 
   useEffect(() => {
@@ -18,5 +18,3 @@ const PessoasPage: React.FC = () => {
     </>
   )
 }
-
-export default PessoasPage

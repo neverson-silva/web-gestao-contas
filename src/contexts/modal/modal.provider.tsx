@@ -20,7 +20,7 @@ export const ModalContext = React.createContext<ModalContextData<any>>(
   {} as unknown as ModalContextData<any>
 )
 
-const ModalProvider: React.FC<any> = ({ children }) => {
+export const ModalProvider: React.FC<any> = ({ children }) => {
   const [settings, setSettings] = React.useState<ModalProps>({
     ...defaultSettings,
   })
@@ -70,5 +70,3 @@ const ModalProvider: React.FC<any> = ({ children }) => {
     </ModalContext.Provider>
   )
 }
-
-export default ModalProvider

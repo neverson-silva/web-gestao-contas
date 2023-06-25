@@ -5,9 +5,9 @@ import {
   VideoCameraOutlined,
 } from '@ant-design/icons'
 import { DashboardPage } from '@pages/dashboard'
-import FaturasPage from '@pages/faturas'
-import LancamentosPage from '@pages/lancamentos'
-import PessoasPage from '@pages/pessoas'
+import { FaturasPage } from '@pages/faturas'
+import { LancamentosPage } from '@pages/lancamentos'
+import { PessoasPage } from '@pages/pessoas'
 import { AtualizacaoPessoaPage } from '@pages/pessoas/atualizacao'
 import { MenuItemType } from 'antd/es/menu/hooks/useItems'
 import { RouteProps } from 'react-router-dom'
