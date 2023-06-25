@@ -8,9 +8,11 @@ export const PessoasPage: React.FC = () => {
 
   useEffect(() => {
     if (!pessoas) {
-      buscarPessoas()
+      buscarPessoas().then(() => {})
     }
   }, [pessoas])
+
+
   return (
     <>
       <CabecalhoPessoas />

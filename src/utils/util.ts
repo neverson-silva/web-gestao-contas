@@ -1,5 +1,4 @@
 import { FormaPagamento, Pessoa } from '../models/faturaItem'
-
 export const toFixedTrunc = (x: string | number, n: number): string => {
   const v = (typeof x === 'string' ? x : x.toString()).split('.')
   if (n <= 0) return v[0]

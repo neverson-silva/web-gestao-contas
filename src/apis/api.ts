@@ -3,37 +3,70 @@ import { notification } from 'antd'
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 import jwtDecode from 'jwt-decode'
 import moment from 'moment'
+import { isValidValue } from '@utils/util.ts'
+import cryptojs from 'crypto-js'
+import { encode as base64_encode, decode as base64_decode } from 'base-64'
 
 export class ApiService {
-  private readonly BASE_URL =
-    import.meta.env.VITE_API_URL ??
-    'https://api-gestaocontas-eqilywar6a-uc.a.run.app/api/v1'
-  //private readonly BASE_URL = 'http://localhost:9090/api/v1'
+  private readonly useEncryptation =
+    import.meta.env.VITE_USE_ENCRYPTATION == 'true'
+
+  private readonly BASE_URL = import.meta.env.VITE_API_URL
+
+  private readonly publicKey = import.meta.env.VITE_PUBLIC_KEY
 
   private _axios: AxiosInstance
 
   constructor() {
+    this.setUp()
+  }
+
+  public getInstance(): AxiosInstance {
+    return this._axios
+  }
+
+  private setUp() {
     this._axios = axios.create({
       baseURL: this.BASE_URL,
     })
 
     // Adicione o interceptor para redirecionar para a tela de login quando ocorrer erro de status 401
     this._axios.interceptors.response.use(
-      (response) => response, // Caso a resposta seja bem-sucedida, retorne-a diretamente
-      async (error) => {
-        if (
-          error?.response?.status === 401 &&
-          (await localStorage.getItem('token'))
-        ) {
-          await localStorage.clear()
+      (response) => {
+        const chave = this.obterChave()
+
+        response.data = this.decriptarDados(
+          response.data?.data ?? response?.data,
+          chave
+        )
+        return response
+      }, // Caso a resposta seja bem-sucedida, retorne-a diretamente
+      (error) => {
+        if (error?.response?.status === 401 && localStorage.getItem('token')) {
+          localStorage.clear()
           // Redirecione para a tela de login
           window.location.href = '/login' // Substitua '/login' pela rota da sua tela de login
         }
         return Promise.reject(error)
       }
     )
-  }
 
+    // Adicione o interceptor para redirecionar para a tela de login quando ocorrer erro de status 401
+    this._axios.interceptors.request.use(
+      // Função para interceptar e modificar as requisições
+      (config) => {
+        const chave = this.obterChave()
+        config.data = this.encriptarDados(config.data, chave)
+        config.params = this.encriptarDados(config.params, chave)
+        // config.headers['data'] = encriptar(config.headers, this.publicKey)
+
+        return config
+      },
+      async (error) => {
+        return Promise.reject(error)
+      }
+    )
+  }
   async login(conta: string, senha: string): Promise<Usuario> {
     return await this.post('/auth/login', { conta, senha })
       .then((response) => {
@@ -142,6 +175,55 @@ export class ApiService {
     config?: AxiosRequestConfig<D>
   ): Promise<R> {
     return await this._axios.patch(url, data, this.getAuthHeaders(config))
+  }
+
+  private obterChave(): string {
+    const token = localStorage.getItem('token')
+    const usuario = isValidValue(token)
+      ? // @ts-ignore
+        (jwtDecode(token)?.usuario as unknown as Usuario)
+      : undefined
+    const composicao = usuario
+      ? `${usuario?.id}|${usuario?.login}|${usuario?.pessoa.id}|${usuario?.pessoa.nome}|${usuario?.pessoa.sobrenome}`
+      : this.publicKey
+    return cryptojs.enc.Base64.stringify(cryptojs.enc.Utf8.parse(composicao))
+  }
+
+  private decriptarDados(value: any, chave: string): any {
+    if (this.useEncryptation) {
+      if (!isValidValue(value)) {
+        return value
+      }
+      try {
+        const decriptado = cryptojs.AES.decrypt(
+          base64_decode(value?.data ?? value),
+          chave
+        )
+        const plainText = decriptado.toString(cryptojs.enc.Utf8)
+        return JSON.parse(plainText)
+      } catch (e: any) {
+        return value
+      }
+    }
+    return value
+  }
+
+  private encriptarDados(data: any, chave: string): any {
+    if (this.useEncryptation) {
+      if (!isValidValue(data)) {
+        return data
+      }
+      try {
+        const mensagem = JSON.stringify(data)
+
+        const dados = cryptojs.AES.encrypt(mensagem, chave).toString()
+
+        return { data: base64_encode(dados) }
+      } catch (e: any) {
+        return data
+      }
+    }
+    return data
   }
 }
 
