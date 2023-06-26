@@ -1,49 +1,48 @@
 import { api } from '@apis/api'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FormInstance } from 'antd/lib/form'
 import { AxiosResponse } from 'axios'
 
 type HttpMethod = 'get' | 'post' | 'put' | 'patch' | 'delete'
 type RequestResult<T = any> = AxiosResponse<T, any> | undefined
 
+export type Fetcher<TParams = any, TData = any> = {
+  (): Promise<RequestResult<TData>>
+  (data: Record<any, any>): Promise<RequestResult<TData>>
+  (form: FormInstance<TParams>): Promise<RequestResult<TData>>
+  (form: FormInstance<TParams>, formValues: TParams): Promise<
+    RequestResult<TData>
+  >
+} 
+
+export type Mutator<TParams = any, TData = any> = Fetcher<TParams, TData> 
+
 type UseRequestResult<TParams = any, TData = any> = {
   loading: boolean
   error: boolean
   errorMessage?: string
   data?: TData
-  mutate: {
-    (): Promise<RequestResult<TData>>
-    (data: Record<any, any>): Promise<RequestResult<TData>>
-    (form: FormInstance<TParams>): Promise<RequestResult<TData>>
-    (form: FormInstance<TParams>, formValues: TParams): Promise<
-      RequestResult<TData>
-    >
-  }
-  fetch: {
-    (): Promise<RequestResult<TData>>
-    (params: Record<any, any>): Promise<RequestResult<TData>>
-    (form: FormInstance<TParams>): Promise<RequestResult<TData>>
-    (form: FormInstance<TParams>, formValues: TParams): Promise<
-      RequestResult<TData>
-    >
-  }
+  mutate: Mutator<TParams, TData>
+  fetch: Fetcher<TParams, TData>
 }
-type UseRequestParameters<TForm> = {
+type UseRequestParameters<TForm, TData> = {
   url: string
   method: HttpMethod
   form?: FormInstance<TForm>
   mapper?: (form: FormInstance<TForm>, formValues: TForm) => TForm | any
   headers?: Record<string, string>
+  onMount?: { callable: (fetch: Fetcher<TForm, TData>, mutate: Mutator<TForm, TData>) => Promise<RequestResult<TData>> , dependencies: any[] }
 }
 
 // @ts-ignore
-export const useRequest = <TForm = any, TData = any>({
+export const useRequest = <TData = any, TForm = any>({
   url,
   method,
   form,
   mapper,
   headers,
-}: UseRequestParameters<TForm>): UseRequestResult<TForm> => {
+  onMount
+}: UseRequestParameters<TForm, TData>): UseRequestResult<TForm, TData> => {
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<boolean>(false)
   const [errorMessage, setErrorMessage] = useState<string | undefined>()
@@ -170,6 +169,12 @@ export const useRequest = <TForm = any, TData = any>({
       }
     }
   }
+
+  useEffect(() => {
+    if (onMount?.callable) {
+      onMount.callable(fetch, mutate)
+    }
+  }, [onMount?.dependencies].flat())
 
   return {
     loading,

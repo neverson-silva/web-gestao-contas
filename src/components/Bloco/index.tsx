@@ -11,7 +11,6 @@ const Bloco: React.FC<BlocoProps> = (props) => {
   return (
     <div
       style={{
-        ...props.style,
         backgroundColor: 'white',
         borderRadius: 10,
         // minHeight: 80,
@@ -19,6 +18,7 @@ const Bloco: React.FC<BlocoProps> = (props) => {
         padding: 16,
         marginTop: 8,
         marginBottom: 8,
+        ...props.style,
       }}
     >
       {props.children}

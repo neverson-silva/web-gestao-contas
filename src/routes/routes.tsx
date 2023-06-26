@@ -3,12 +3,14 @@ import {
   UploadOutlined,
   UserOutlined,
   VideoCameraOutlined,
+  UsergroupAddOutlined,
 } from '@ant-design/icons'
 import { DashboardPage } from '@pages/dashboard'
 import { FaturasPage } from '@pages/faturas'
 import { LancamentosPage } from '@pages/lancamentos'
 import { PessoasPage } from '@pages/pessoas'
 import { AtualizacaoPessoaPage } from '@pages/pessoas/atualizacao'
+import { TotalPessoasPage } from '@pages/total-pessoas'
 import { MenuItemType } from 'antd/es/menu/hooks/useItems'
 import { RouteProps } from 'react-router-dom'
 
@@ -20,6 +22,7 @@ export enum EAppRoutes {
   FATURAS = 'faturas',
   PESSOAS = 'pessoas',
   PESSOAS_ATUALIZACAO = 'pessoas/:id',
+  TOTAL_PESSOAS = 'total-pessoas',
 }
 
 export type MenuLateralItem = MenuItemType & {
@@ -66,6 +69,14 @@ export const routes: RouteMenuLateralItem[] = [
     path: EAppRoutes.FATURAS,
     label: 'Faturas',
     element: <FaturasPage />,
+    roles: ['ROLE_ADMIN'],
+  },
+  {
+    key: EAppRoutes.TOTAL_PESSOAS,
+    icon: <UsergroupAddOutlined />,
+    path: EAppRoutes.TOTAL_PESSOAS,
+    label: 'Total Pessoas',
+    element: <TotalPessoasPage />,
     roles: ['ROLE_ADMIN'],
   },
 ]

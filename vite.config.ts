@@ -1,6 +1,6 @@
 import react from '@vitejs/plugin-react'
 import path from 'path'
-import { defineConfig } from 'vite'
+import { defineConfig, splitVendorChunkPlugin } from 'vite'
 import checker from 'vite-plugin-checker'
 import eslint from 'vite-plugin-eslint'
 
@@ -11,6 +11,7 @@ export default defineConfig({
   },
   plugins: [
     react(),
+    splitVendorChunkPlugin(),
     {
       // do not fail on serve (i.e. local development)
       ...eslint({

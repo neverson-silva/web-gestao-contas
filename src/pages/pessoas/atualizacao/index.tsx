@@ -29,7 +29,10 @@ export const AtualizacaoPessoaPage: React.FC = () => {
       apelido: values.apelido,
     }
   }
-  const { loading, errorMessage, error, mutate } = useRequest<Partial<Pessoa>>({
+  const { loading, errorMessage, error, mutate } = useRequest<
+    any,
+    Partial<Pessoa>
+  >({
     url: 'pessoas/:id',
     method: 'put',
     form,
