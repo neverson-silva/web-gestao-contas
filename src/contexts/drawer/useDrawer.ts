@@ -1,9 +1,10 @@
+//@ts-nocheck
 import { DrawerProps } from 'antd'
 
 import React, { ReactNode } from 'react'
-import { DrawerContext, DrawerWithProps } from './drawer.provider'
+import { DrawerContext, DrawerHookProps } from './drawer.provider'
 
-export function useDrawer<T extends DrawerWithProps>({
+export function useDrawer<T extends DrawerHookProps<T>>({
   settings,
   render,
 }: {

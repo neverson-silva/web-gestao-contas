@@ -10,7 +10,6 @@ import { Avatar, Col, Dropdown, Layout, Row, Space, Typography } from 'antd'
 import React, { useState } from 'react'
 
 const { Header, Sider, Content } = Layout
-
 type PrivateLayoutProps = {
   children: React.ReactNode
 }

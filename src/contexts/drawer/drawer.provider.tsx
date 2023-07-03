@@ -46,6 +46,7 @@ export const DrawerProvider: React.FC<any> = ({ children }) => {
   )
 
   const onHandleCancel = () => {
+    console.log('aqui foi chamado')
     setContentDrawer(null)
   }
 

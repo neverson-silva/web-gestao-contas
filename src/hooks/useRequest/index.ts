@@ -1,7 +1,9 @@
 import { api } from '@apis/api'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { FormInstance } from 'antd/lib/form'
 import { AxiosResponse } from 'axios'
+import { isValidValue } from '@utils/util'
+import { notification } from 'antd'
 
 type HttpMethod = 'get' | 'post' | 'put' | 'patch' | 'delete'
 type RequestResult<T = any> = AxiosResponse<T, any> | undefined
@@ -13,9 +15,9 @@ export type Fetcher<TParams = any, TData = any> = {
   (form: FormInstance<TParams>, formValues: TParams): Promise<
     RequestResult<TData>
   >
-} 
+}
 
-export type Mutator<TParams = any, TData = any> = Fetcher<TParams, TData> 
+export type Mutator<TParams = any, TData = any> = Fetcher<TParams, TData>
 
 type UseRequestResult<TParams = any, TData = any> = {
   loading: boolean
@@ -31,7 +33,13 @@ type UseRequestParameters<TForm, TData> = {
   form?: FormInstance<TForm>
   mapper?: (form: FormInstance<TForm>, formValues: TForm) => TForm | any
   headers?: Record<string, string>
-  onMount?: { callable: (fetch: Fetcher<TForm, TData>, mutate: Mutator<TForm, TData>) => Promise<RequestResult<TData>> , dependencies: any[] }
+  onMount?: {
+    callable: (
+      fetch: Fetcher<TForm, TData>,
+      mutate: Mutator<TForm, TData>
+    ) => Promise<RequestResult<TData>>
+    dependencies: any[]
+  }
 }
 
 // @ts-ignore
@@ -41,12 +49,21 @@ export const useRequest = <TData = any, TForm = any>({
   form,
   mapper,
   headers,
-  onMount
+  onMount,
 }: UseRequestParameters<TForm, TData>): UseRequestResult<TForm, TData> => {
   const [loading, setLoading] = useState<boolean>(false)
-  const [error, setError] = useState<boolean>(false)
+  //const [error, setError] = useState<boolean>(false)
   const [errorMessage, setErrorMessage] = useState<string | undefined>()
   const [data, setData] = useState<TData>()
+  
+  const _error = useRef(false)
+  const error = _error.current
+  const setError = (has: boolean) => {
+    console.log('error seted')
+    _error.current = has
+  }
+
+
   const interpolateRouteParams = (url: string, params: Record<string, any>) => {
     let interpolatedUrl = url
 
@@ -69,8 +86,7 @@ export const useRequest = <TData = any, TForm = any>({
   ): Promise<RequestResult> => {
     try {
       setLoading(true)
-      setError(false)
-      setErrorMessage(undefined)
+
 
       let requestParams: any
 
@@ -93,18 +109,22 @@ export const useRequest = <TData = any, TForm = any>({
         error?.response?.data?.message ?? 'Ocorreu um erro na requisição'
       )
       setData(undefined)
+      console.log('aqui deu erro')
     } finally {
       setLoading(false)
     }
   }
 
-  const mutate: any = (
+  const mutate: any = async(
     data?:
       | TForm
       | ((form: FormInstance<TForm>) => Record<string, any>)
       | ((form: FormInstance<TForm>, formValues: TForm) => Record<string, any>)
   ): // @ts-ignore
   Promise<RequestResult> => {
+    setError(false)
+    setErrorMessage(undefined)
+
     if (method === 'get') {
       throw new Error(
         'Não é possível usar objeto de dados com requisições GET.'
@@ -117,15 +137,15 @@ export const useRequest = <TData = any, TForm = any>({
           ? mapper(form, formValues)
           : // @ts-ignore
             data(form, formValues)
-        return performRequest(params)
+        return await performRequest(params)
       }
     } else if (typeof data === 'object') {
       // @ts-ignore
-      return performRequest(data)
+      return await performRequest(data)
     } else {
       if (form) {
         const formValues = form.getFieldsValue(true)
-        return performRequest({ ...formValues })
+        return await performRequest({ ...formValues })
       } else {
         throw new Error(
           'Não é possível fazer uma requisição sem fornecer dados ou uma instância de formulário.'
@@ -141,6 +161,10 @@ export const useRequest = <TData = any, TForm = any>({
       | ((form: FormInstance<TForm>, formValues: TForm) => Record<string, any>)
   ): // @ts-ignore
   Promise<RequestResult> => {
+
+    setError(false)
+    setErrorMessage(undefined)
+    
     if (method !== 'get') {
       throw new Error(
         'Não é possível usar o método "fetch" com requisições diferentes de GET.'
@@ -171,10 +195,17 @@ export const useRequest = <TData = any, TForm = any>({
   }
 
   useEffect(() => {
+    console.log('chamamos aqui')
     if (onMount?.callable) {
       onMount.callable(fetch, mutate)
     }
   }, [onMount?.dependencies].flat())
+
+  useEffect(() => {
+    if (isValidValue(errorMessage)) {
+      notification.error({ message: errorMessage})
+    }
+  }, [errorMessage])
 
   return {
     loading,

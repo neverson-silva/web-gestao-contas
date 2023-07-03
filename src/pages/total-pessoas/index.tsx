@@ -4,12 +4,31 @@ import { useMesAno } from '@contexts/mesAno/useMesAno'
 import { useRequest } from '@hooks/useRequest'
 import { Avatar, Col, Row, Skeleton } from 'antd'
 import { TotalPessoa } from '@models/total-pessoa'
-import { RightOutlined } from '@ant-design/icons'
-import { formatarDinheiro } from '@utils/util'
+import { RightOutlined, CheckOutlined } from '@ant-design/icons'
+import { classNames, formatarDinheiro, isValidValue } from '@utils/util'
+import { useDrawer } from '@contexts/drawer/useDrawer.ts'
+import {
+  AtualizacaoTotalPessoa,
+  AtualizacaoTotalPessoaProps,
+} from '@pages/total-pessoas/components/AtualizacaoTotalPessoa'
 
 export const TotalPessoasPage: React.FC = () => {
   const { mes, ano } = useMesAno()
 
+  const [openDrawer, closeDrawer] = useDrawer<AtualizacaoTotalPessoaProps>({
+    //@ts-ignore
+    render: <AtualizacaoTotalPessoa />,
+    settings: {
+      placement: 'bottom',
+      maskClosable: false,
+      closable: false,
+      title: null,
+      bodyStyle: {
+        padding: 0,
+        margin: 0,
+      },
+    },
+  })
   const { data, loading } = useRequest<TotalPessoa[]>({
     url: 'total-pessoas',
     method: 'get',
@@ -18,6 +37,13 @@ export const TotalPessoasPage: React.FC = () => {
       dependencies: [mes, ano],
     },
   })
+
+  const jaFoiPago = (totalPessoa: TotalPessoa): boolean => {
+    return (
+      isValidValue(totalPessoa.valorPago) &&
+      totalPessoa.valorPago >= totalPessoa.total
+    )
+  }
 
   return (
     <>
@@ -34,8 +60,21 @@ export const TotalPessoasPage: React.FC = () => {
                   return (
                     <Col xs={12} key={totalPessoa.id}>
                       <div
-                        className="w-full bg-white p-4 mb-3 rounded-lg cursor-pointer border-[0.1px] border-solid border-gray-200 shadow-sm hover:bg-zinc-100"
-                        onClick={() => alert(totalPessoa.pessoa.nome)}
+                        className={classNames(
+                          'w-full bg-white p-4 mb-3 rounded-lg border-[0.1px] border-solid border-gray-200 shadow-sm',
+                          {
+                            'cursor-pointer hover:bg-zinc-100':
+                              !jaFoiPago(totalPessoa),
+                          }
+                        )}
+                        onClick={() =>
+                          !jaFoiPago(totalPessoa)
+                            ? openDrawer({
+                                ...totalPessoa,
+                                onGoBack: closeDrawer,
+                              })
+                            : null
+                        }
                       >
                         <Row>
                           <Col xs={4} className="flex items-center">
@@ -53,7 +92,7 @@ export const TotalPessoasPage: React.FC = () => {
                               total {formatarDinheiro(totalPessoa?.total)}
                             </p>
                             <p className="p-0 m-0 text-sm font-light">
-                              diferenca{' '}
+                              diferença{' '}
                               {formatarDinheiro(totalPessoa?.diferenca)}
                             </p>
                             <p className="p-0 m-0 text-sm font-light">
@@ -62,7 +101,11 @@ export const TotalPessoasPage: React.FC = () => {
                           </Col>
                           <Col xs={4} className="flex justify-end items-center">
                             <span className="text-gray-700 text-sm font-semibold">
-                              <RightOutlined />
+                              {jaFoiPago(totalPessoa) ? (
+                                <CheckOutlined style={{ color: 'green' }} />
+                              ) : (
+                                <RightOutlined />
+                              )}
                             </span>
                           </Col>
                         </Row>
