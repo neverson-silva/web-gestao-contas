@@ -1,9 +1,10 @@
-import React from 'react'
-import { TotalPessoa } from '@models/total-pessoa'
 import { DrawerWithProps } from '@contexts/drawer/drawer.provider'
-import { Button, Col, Form, Input, Row, Typography } from 'antd'
-import { NumericFormat } from 'react-number-format'
 import { useRequest } from '@hooks/useRequest'
+import { TotalPessoa } from '@models/total-pessoa'
+import { isValidValue } from '@utils/util'
+import { Button, Col, Form, Input, Row, Typography, notification } from 'antd'
+import React from 'react'
+import { NumericFormat } from 'react-number-format'
 
 type TotalPessoaUpdate = {
   valorPago: number
@@ -27,17 +28,25 @@ export const AtualizacaoTotalPessoa: React.FC<AtualizacaoTotalPessoaProps> = ({
 }) => {
   const [form] = Form.useForm<TotalPessoaUpdate>()
 
-  const { loading, mutate, error } = useRequest<any, TotalPessoaUpdate>({
-    url: `/total-pessoa/:id`,
+  const { loading, mutate, errorMessage } = useRequest<any, TotalPessoaUpdate>({
+    url: `/total-pessoas/:id`,
     method: 'put',
     mapper: (_form, values) => ({ ...values, mes: mes.id, ano, id }),
     form,
   })
 
   const handleUpdate = async () => {
-    console.log('before', error, loading)
     await mutate()
-    console.log('after', error, loading)
+    if (!isValidValue(errorMessage)) {
+      notification.error({
+        message: 'Erro ao atualizar',
+      })
+    } else {
+      await onGoBack()
+      notification.success({
+        message: 'Total Pessoa atualizado com sucesso',
+      })
+    }
   }
 
   return (

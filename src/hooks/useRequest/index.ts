@@ -1,9 +1,9 @@
 import { api } from '@apis/api'
-import { useEffect, useRef, useState } from 'react'
-import { FormInstance } from 'antd/lib/form'
-import { AxiosResponse } from 'axios'
 import { isValidValue } from '@utils/util'
 import { notification } from 'antd'
+import { FormInstance } from 'antd/lib/form'
+import { AxiosResponse } from 'axios'
+import { useEffect, useState } from 'react'
 
 type HttpMethod = 'get' | 'post' | 'put' | 'patch' | 'delete'
 type RequestResult<T = any> = AxiosResponse<T, any> | undefined
@@ -52,17 +52,9 @@ export const useRequest = <TData = any, TForm = any>({
   onMount,
 }: UseRequestParameters<TForm, TData>): UseRequestResult<TForm, TData> => {
   const [loading, setLoading] = useState<boolean>(false)
-  //const [error, setError] = useState<boolean>(false)
+  const [error, setError] = useState<boolean>(false)
   const [errorMessage, setErrorMessage] = useState<string | undefined>()
   const [data, setData] = useState<TData>()
-  
-  const _error = useRef(false)
-  const error = _error.current
-  const setError = (has: boolean) => {
-    console.log('error seted')
-    _error.current = has
-  }
-
 
   const interpolateRouteParams = (url: string, params: Record<string, any>) => {
     let interpolatedUrl = url
@@ -86,7 +78,6 @@ export const useRequest = <TData = any, TForm = any>({
   ): Promise<RequestResult> => {
     try {
       setLoading(true)
-
 
       let requestParams: any
 
@@ -115,7 +106,7 @@ export const useRequest = <TData = any, TForm = any>({
     }
   }
 
-  const mutate: any = async(
+  const mutate: any = async (
     data?:
       | TForm
       | ((form: FormInstance<TForm>) => Record<string, any>)
@@ -161,10 +152,9 @@ export const useRequest = <TData = any, TForm = any>({
       | ((form: FormInstance<TForm>, formValues: TForm) => Record<string, any>)
   ): // @ts-ignore
   Promise<RequestResult> => {
-
     setError(false)
     setErrorMessage(undefined)
-    
+
     if (method !== 'get') {
       throw new Error(
         'Não é possível usar o método "fetch" com requisições diferentes de GET.'
@@ -195,7 +185,6 @@ export const useRequest = <TData = any, TForm = any>({
   }
 
   useEffect(() => {
-    console.log('chamamos aqui')
     if (onMount?.callable) {
       onMount.callable(fetch, mutate)
     }
@@ -203,7 +192,7 @@ export const useRequest = <TData = any, TForm = any>({
 
   useEffect(() => {
     if (isValidValue(errorMessage)) {
-      notification.error({ message: errorMessage})
+      notification.error({ message: errorMessage })
     }
   }, [errorMessage])
 

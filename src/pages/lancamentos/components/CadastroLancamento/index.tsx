@@ -1,6 +1,8 @@
 import { api } from '@apis/api'
 import { CadastroFormValues } from '@contexts//lancamentos/lancamentos.provider'
 import { useCadastroCompra } from '@contexts//lancamentos/useCadastroCompra'
+import { useBuscaLancamento } from '@contexts/lancamentos/useBuscaLancamento.ts'
+
 import {
   EDivisaoLancamentoTipo,
   FaturaItem,
@@ -15,13 +17,12 @@ import {
   Divider,
   Drawer,
   Form,
-  notification,
   Row,
   Typography,
+  notification,
 } from 'antd'
 import moment from 'moment'
 import React, { useEffect, useState } from 'react'
-import { useBuscaLancamento } from '@contexts/lancamentos/useBuscaLancamento.ts'
 
 export type CadastroLancamentoProps = {
   isOpened: boolean
@@ -150,7 +151,7 @@ const CadastroLancamento: React.FC<CadastroLancamentoProps> = ({
   }
 
   const inicializarFormulario = () => {
-    const idsPessoas = [compra?.pessoa.id]
+    const idsPessoas = [compra?.pessoa.id ?? 0]
 
     if (compra?.dividido && Array.isArray(compra.itensRelacionados)) {
       if (compra.divisaoId === EDivisaoLancamentoTipo.IGUALMENTE) {

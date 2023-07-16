@@ -1,16 +1,16 @@
-import React from 'react'
-import { TotalPessoaCabecalho } from './components/TotalPessoaCabecalho'
+import { CheckOutlined, RightOutlined } from '@ant-design/icons'
+import { useDrawer } from '@contexts/drawer/useDrawer.ts'
 import { useMesAno } from '@contexts/mesAno/useMesAno'
 import { useRequest } from '@hooks/useRequest'
-import { Avatar, Col, Row, Skeleton } from 'antd'
 import { TotalPessoa } from '@models/total-pessoa'
-import { RightOutlined, CheckOutlined } from '@ant-design/icons'
-import { classNames, formatarDinheiro, isValidValue } from '@utils/util'
-import { useDrawer } from '@contexts/drawer/useDrawer.ts'
 import {
   AtualizacaoTotalPessoa,
   AtualizacaoTotalPessoaProps,
 } from '@pages/total-pessoas/components/AtualizacaoTotalPessoa'
+import { classNames, formatarDinheiro, isValidValue } from '@utils/util'
+import { Avatar, Col, Row, Skeleton } from 'antd'
+import React from 'react'
+import { TotalPessoaCabecalho } from './components/TotalPessoaCabecalho'
 
 export const TotalPessoasPage: React.FC = () => {
   const { mes, ano } = useMesAno()
@@ -39,7 +39,7 @@ export const TotalPessoasPage: React.FC = () => {
   })
 
   const jaFoiPago = (totalPessoa: TotalPessoa): boolean => {
-    return (
+    return !(
       isValidValue(totalPessoa.valorPago) &&
       totalPessoa.valorPago >= totalPessoa.total
     )

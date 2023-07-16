@@ -1,7 +1,6 @@
 import react from '@vitejs/plugin-react'
 import path from 'path'
 import { defineConfig, splitVendorChunkPlugin } from 'vite'
-import checker from 'vite-plugin-checker'
 import eslint from 'vite-plugin-eslint'
 
 export default defineConfig({
@@ -24,10 +23,10 @@ export default defineConfig({
       apply: 'serve',
       enforce: 'post',
     },
-    checker({
-      // e.g. use TypeScript check
-      typescript: true,
-    }),
+    // checker({
+    //   // e.g. use TypeScript check
+    //   typescript: true,
+    // }),
   ],
   resolve: {
     alias: {
