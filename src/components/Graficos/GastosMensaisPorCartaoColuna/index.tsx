@@ -1,9 +1,8 @@
 import { Column } from '@ant-design/plots'
 import { ColumnConfig } from '@ant-design/plots/es/components/column'
-import { api } from '@apis/api'
 import { useAuth } from '@contexts/auth/useAuth'
-import { MesAnoContextData } from '@contexts/mesAno/mesAno.provider'
 import { useMesAno } from '@contexts/mesAno/useMesAno'
+import { useRequest } from '@hooks/useRequest'
 import { GraficoDadosPorFormaPagamento } from '@models/graficoDadosPorFormaPagamento'
 import { formatarDinheiro } from '@utils/util'
 import { notification } from 'antd'
@@ -19,34 +18,20 @@ const GastosMensaisPorCartaoColuna = () => {
   const [data, setData] = useState<GastosMensaisPorCartaoColunaDataset[]>([])
   const [coresCartoes, setCoresCartoes] = useState<string[]>([])
 
-  const [loading, setLoading] = useState(false)
   const mesAno = useMesAno()
   const { isAuthenticated } = useAuth()
-  const buscarDadosGraficoFormaPagamento = async (
-    pMesAno: MesAnoContextData
-  ) => {
-    try {
-      setLoading(true)
-      const { data } = await api.get<GraficoDadosPorFormaPagamento[]>(
-        'dashboard/grafico/gastos-por-cartao',
-        {
-          params: {
-            mesReferencia: pMesAno?.mes,
-            anoReferencia: pMesAno?.ano,
-          },
-        }
-      )
-      const dataset = prepararDataSet(data)
-      setData(dataset)
-    } catch (e) {
-      notification.error({
-        description: 'Ocorreu um erro ao buscar os dados',
-        message: 'Tente novamente mais tade',
-      })
-    } finally {
-      setLoading(false)
+
+  const { loading, error, fetch } = useRequest<GraficoDadosPorFormaPagamento[]>(
+    {
+      url: 'dashboard/grafico/gastos-por-cartao',
+      method: 'get',
+      onFetchFinished: (dados) => {
+        const dataset = prepararDataSet(dados)
+        setData(dataset)
+      },
     }
-  }
+  )
+
   const config: ColumnConfig = {
     data,
     loading,
@@ -95,9 +80,21 @@ const GastosMensaisPorCartaoColuna = () => {
 
   useEffect(() => {
     if (mesAno?.mes && mesAno?.ano && isAuthenticated) {
-      buscarDadosGraficoFormaPagamento(mesAno)
+      fetch({
+        mesReferencia: mesAno?.mes,
+        anoReferencia: mesAno?.ano,
+      })
     }
   }, [mesAno, isAuthenticated])
+
+  useEffect(() => {
+    if (error) {
+      notification.error({
+        description: 'Ocorreu um erro ao buscar os dados',
+        message: 'Tente novamente mais tade',
+      })
+    }
+  }, [error])
 
   return <Column {...config} />
 }

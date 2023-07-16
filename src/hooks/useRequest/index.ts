@@ -40,6 +40,7 @@ type UseRequestParameters<TForm, TData> = {
     ) => Promise<RequestResult<TData>>
     dependencies: any[]
   }
+  onFetchFinished?: (data: TData) => void
 }
 
 // @ts-ignore
@@ -50,6 +51,7 @@ export const useRequest = <TData = any, TForm = any>({
   mapper,
   headers,
   onMount,
+  onFetchFinished,
 }: UseRequestParameters<TForm, TData>): UseRequestResult<TForm, TData> => {
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<boolean>(false)
@@ -92,6 +94,10 @@ export const useRequest = <TData = any, TForm = any>({
       const response = await api[method](finalUrl, ...requestParams)
 
       setData(response.data)
+
+      if (method === 'get' && onFetchFinished) {
+        onFetchFinished(response?.data)
+      }
 
       return response
     } catch (error: any) {
