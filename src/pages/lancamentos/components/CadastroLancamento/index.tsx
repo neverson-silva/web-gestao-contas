@@ -126,6 +126,9 @@ const CadastroLancamento: React.FC<CadastroLancamentoProps> = ({
           fechamento: lancamento.mes,
           id: lancamento.id * 2,
           itensRelacionados: lancamento,
+          nome: lancamento.nome,
+          valor: lancamento.valor,
+          valorUtilizado: lancamento.valorUtilizado
         } as unknown as FaturaItem
         addStart(faturaItem)
 
