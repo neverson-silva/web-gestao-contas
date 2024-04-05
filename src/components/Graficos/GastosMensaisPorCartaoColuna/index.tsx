@@ -26,7 +26,7 @@ const GastosMensaisPorCartaoColuna = () => {
       url: 'dashboard/grafico/gastos-por-cartao',
       method: 'get',
       onFetchFinished: (dados) => {
-        const dataset = prepararDataSet(dados)
+                const dataset = prepararDataSet(dados)
         setData(dataset)
       },
     }
@@ -56,27 +56,27 @@ const GastosMensaisPorCartaoColuna = () => {
   const prepararDataSet = (
     dados: GraficoDadosPorFormaPagamento[]
   ): GastosMensaisPorCartaoColunaDataset[] => {
-    const cores: string[] = []
-    const dataset = dados
-      .map((dado) => {
-        return [
-          ...dado.totaisFormaPagamento.map((total) => {
-            if (!cores.includes(total.corFormaPagamento)) {
-              cores.push(total.corFormaPagamento)
-            }
-
-            return {
-              reference: `${dado.nome}/${dado.anoFechamento}`,
-              label: total.nomeFormaPagamento,
-              value: total.valorTotal,
-            } as GastosMensaisPorCartaoColunaDataset
-          }),
-        ]
-      })
-      .flat()
-    setCoresCartoes(cores)
-    return dataset
-  }
+          const cores: string[] = []
+      const dataset = dados
+        .map((dado) => {
+          return [
+            ...dado.totaisFormaPagamento.map((total) => {
+              if (!cores.includes(total.corFormaPagamento)) {
+                cores.push(total.corFormaPagamento ?? 'black')
+              }
+  
+              return {
+                reference: `${dado.nome}/${dado.anoFechamento}`,
+                label: total.nomeFormaPagamento,
+                value: total.valorTotal,
+              } as GastosMensaisPorCartaoColunaDataset
+            }),
+          ]
+        })
+        .flat()
+              setCoresCartoes(cores)
+      return dataset
+      }
 
   useEffect(() => {
     if (mesAno?.mes && mesAno?.ano && isAuthenticated) {
